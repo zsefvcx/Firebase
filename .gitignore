@@ -22,6 +22,8 @@ doc/api/
 *.js_
 *.js.deps
 *.js.map
+
+#Firebase
 google-services.json
 GoogleService-Info.plist
 Index.html 
