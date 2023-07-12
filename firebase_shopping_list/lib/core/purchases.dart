@@ -9,21 +9,70 @@ part 'purchases.g.dart';
 
 enum StatusOfAddingPurchases{
   add,
-  //rem,
+  rem,
   brk,
+  mod,
   def;
 
 }
 
-@Freezed(makeCollectionsUnmodifiable: false)
-class PurchasesList with _$PurchasesList {
+class PurchasesList {
+  static final Map<int, Purchase> _purchases = {};
 
-  const factory PurchasesList({
-    required List<Purchase> purchases,
-  }) = _PurchasesList;
+  static int get length => _purchases.length;
 
-  factory PurchasesList.fromJson(Map<String, Object?> json)
-  => _$PurchasesListFromJson(json);
+  static bool add(Purchase data) {
+    int id = data.id;
+    if(_purchases[id]==null) {
+       _purchases[id]=data;
+       return true;
+    }
+    return false;
+  }
+
+  static remAll() {
+    _purchases.clear();
+  }
+
+  static bool rem(Purchase data) {
+    int id = data.id;
+    Purchase? purchase = _purchases[id];
+    if(purchase!=null) {
+      _purchases.remove(id);
+      return true;
+    }
+    return false;
+  }
+
+  static bool mod(Purchase data) {
+    int id = data.id;
+    Purchase? purchase = _purchases[id];
+    if(purchase!=null) {
+      _purchases[id]=data;
+      return true;
+    }
+    return false;
+  }
+
+  static void fromJson(dynamic data){
+    if (data is List<dynamic>){
+      for (var element in data) {
+        if (element is Map<String, dynamic>){
+          if (element['id'] is int) {
+            int id = element['id'] as int;
+            if (_purchases[id] == null) {
+                _purchases[id] = Purchase.fromJson(element);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  @override
+  String toString() {
+    return _purchases.toString();
+  }
 }
 
 @freezed
@@ -40,4 +89,5 @@ class Purchase with _$Purchase{
 
   factory Purchase.fromJson(Map<String, Object?> json)
       => _$PurchaseFromJson(json);
+
 }

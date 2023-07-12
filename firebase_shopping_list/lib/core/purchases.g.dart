@@ -6,18 +6,6 @@ part of 'purchases.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$_PurchasesList _$$_PurchasesListFromJson(Map<String, dynamic> json) =>
-    _$_PurchasesList(
-      purchases: (json['purchases'] as List<dynamic>)
-          .map((e) => Purchase.fromJson(e as Map<String, dynamic>))
-          .toList(),
-    );
-
-Map<String, dynamic> _$$_PurchasesListToJson(_$_PurchasesList instance) =>
-    <String, dynamic>{
-      'purchases': instance.purchases,
-    };
-
 _$_Purchasese _$$_PurchaseseFromJson(Map<String, dynamic> json) =>
     _$_Purchasese(
       id: json['id'] as int,
