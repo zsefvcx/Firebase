@@ -22,6 +22,9 @@ doc/api/
 *.js_
 *.js.deps
 *.js.map
+google-services.json
+GoogleService-Info.plist
+Index.html 
 
 .flutter-plugins
 .flutter-plugins-dependencies
