@@ -21,6 +21,8 @@ class PurchasesList {
 
   static int get length => _purchases.length;
 
+  static Purchase? get(int id) => _purchases[id];
+
   static bool add(Purchase data) {
     int id = data.id;
     if(_purchases[id]==null) {
@@ -34,8 +36,7 @@ class PurchasesList {
     _purchases.clear();
   }
 
-  static bool rem(Purchase data) {
-    int id = data.id;
+  static bool rem(int id) {
     Purchase? purchase = _purchases[id];
     if(purchase!=null) {
       _purchases.remove(id);

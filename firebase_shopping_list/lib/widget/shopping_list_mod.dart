@@ -1,4 +1,6 @@
 
+// ignore_for_file: unused_result
+
 import 'package:firebase_shopping_list/core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -33,9 +35,9 @@ class _ShoppingListModWidgetState extends State<ShoppingListModWidget> {
   @override
   Widget build(BuildContext context) {
     String? name = widget.data.name;
-    int price = widget.data.price;
-    int count = widget.data.count;
-    String unit = widget.data.unit;
+    int? price = widget.data.price;
+    int? count = widget.data.count;
+    String? unit = widget.data.unit;
 
 
     return SimpleDialog(
@@ -56,10 +58,7 @@ class _ShoppingListModWidgetState extends State<ShoppingListModWidget> {
                     labelText: 'Purchase *',
                   ),
                   onSaved: (String? value) {
-                    // This optional block of code can be used to run
-                    // code when the user saves the form.
-                    (name==widget.data.name)?null:name;
-                    value!=null?name=value:name=widget.data.name;
+                    name= (value==widget.data.name)?null:value;
                   },
                   maxLines:   1,
                   maxLength: 40,
@@ -91,9 +90,10 @@ class _ShoppingListModWidgetState extends State<ShoppingListModWidget> {
                         ),
                         onSaved: (String? value) {
                           if (value == null || value.isEmpty) {
-                            setState(() {
                               price = 0;
-                            });
+                          } else {
+                            int val = int.parse(value);
+                            price= (val==widget.data.price)?null:val;
                           }
                         },
                         maxLines:   1,
@@ -119,12 +119,16 @@ class _ShoppingListModWidgetState extends State<ShoppingListModWidget> {
                           labelText: 'Count',
                         ),
                         onSaved: (String? value) {
-                          // This optional block of code can be used to run
-                          // code when the user saves the form.
+                          if (value == null || value.isEmpty) {
+                              count = 0;
+                          } else {
+                            int val = int.parse(value);
+                            count= (val==widget.data.count)?null:val;
+                          }
                         },
                         maxLines:   1,
                         maxLength: 14,
-                        initialValue: widget.data.count.toString(),
+                        initialValue: count.toString(),
                         keyboardType: TextInputType.number,
                         inputFormatters: [
                           //FilteringTextInputFormatter.digitsOnly,
@@ -146,13 +150,15 @@ class _ShoppingListModWidgetState extends State<ShoppingListModWidget> {
                             labelText: 'Unit',
                           ),
                           onSaved: (String? value) {
-                            // This optional block of code can be used to run
-                            // code when the user saves the form.
-                            value!=null?unit=value:unit=widget.data.unit;
+                            if (value == null || value.isEmpty) {
+                              unit = 'шт.';
+                            } else {
+                              unit = (value == widget.data.unit) ? null : value;
+                            }
                           },
                           maxLines:   1,
                           maxLength: 3,
-                          initialValue: unit.toString(),
+                          initialValue: unit,
                           keyboardType: TextInputType.text,
                           inputFormatters: [
                             FilteringTextInputFormatter.allow(RegExp(r'^[a-zA-Z0-9а-яА-Я _]+$')),
@@ -161,26 +167,6 @@ class _ShoppingListModWidgetState extends State<ShoppingListModWidget> {
                         ),
                       ),
                     ),
-                    // Expanded(
-                    //   flex: 1,
-                    //   child: Row(
-                    //     children: [
-                    //       const Text('Bought'),
-                    //       Switch(
-                    //
-                    //         // This bool value toggles the switch.
-                    //         value: light,
-                    //         activeColor: Colors.red,
-                    //         onChanged: (bool value) {
-                    //         // This is called when the user toggles the switch.
-                    //           setState(() {
-                    //             light = value;
-                    //           });
-                    //         },
-                    //       ),
-                    //     ],
-                    //   ),
-                    // ),
                   ],
                 ),
               ),
@@ -196,12 +182,13 @@ class _ShoppingListModWidgetState extends State<ShoppingListModWidget> {
                 child: Expanded(
                   child: SimpleDialogOption(
                     onPressed: () { if(_validateForm()==true) {
+                      _formKey.currentState?.save();
                       Navigator.pop(context, (StatusOfAddingPurchases.add,
                       widget.data.copyWith(
                         name: null == name? widget.data.name : name!,
-                        price: price,
-                        count: count,
-                        unit: unit,
+                        price: null == price? widget.data.price : price!,
+                        count: null == count? widget.data.count : count!,
+                        unit: null == unit? widget.data.unit : unit!,
                       ),
                     ));
                     } },
@@ -214,12 +201,13 @@ class _ShoppingListModWidgetState extends State<ShoppingListModWidget> {
                 child: Expanded(
                   child: SimpleDialogOption(
                     onPressed: () { if(_validateForm()==true) {
+                      _formKey.currentState?.save();
                       Navigator.pop(context, (StatusOfAddingPurchases.mod,
                       widget.data.copyWith(
                         name: null == name? widget.data.name : name!,
-                        price: price,
-                        count: count,
-                        unit: unit,
+                        price: null == price? widget.data.price : price!,
+                        count: null == count? widget.data.count : count!,
+                        unit: null == unit? widget.data.unit : unit!,
                       ),
                     ));
                     } },

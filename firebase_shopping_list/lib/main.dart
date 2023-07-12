@@ -35,11 +35,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
 
-  Future<void> _incrementCounter() async {
-
-
+  Future<void> _add() async {
     final int id =  PurchasesList.length;
     Purchase data = Purchase(
       id: id,
@@ -51,20 +48,22 @@ class _MyHomePageState extends State<MyHomePage> {
     );
     //             = [Add , Mod  , Brk , Rem  ,];
     List<bool> vis = [true, false, true, false,];
-    await showCustomDialog(vis, data);
+    await _showCustomDialog(vis, data);
     developer.log(PurchasesList().toString());
-
-    //              = [Add  , Mod , Brk , Rem ,];
-    List<bool> vis1 = [false, true, true, true,];
-    await showCustomDialog(vis1, data);
-    developer.log(PurchasesList().toString());
-
-    setState(() {
-      _counter++;
-    });
+    setState(() {_readListData = _readList();});
   }
 
-  Future<void> showCustomDialog(List<bool> vis, Purchase dt) async {
+  Future<bool> _readList() async {
+    try {
+      await Future.delayed(const Duration(microseconds: 100));
+      return true;
+    } catch (e) {
+      developer.log(e.toString());
+      return false;
+    }
+  }
+
+  Future<void> _showCustomDialog(List<bool> vis, Purchase dt) async {
      switch (await showDialog<(StatusOfAddingPurchases, Purchase)>(
       context: context,
       builder: (BuildContext context) {
@@ -85,7 +84,7 @@ class _MyHomePageState extends State<MyHomePage> {
         break;
       case (StatusOfAddingPurchases.rem, Purchase data):
         developer.log('${StatusOfAddingPurchases.rem}');
-        PurchasesList.rem(data);
+        PurchasesList.rem(data.id);
         break;
       case (StatusOfAddingPurchases.mod, Purchase data):
         developer.log('${StatusOfAddingPurchases.mod}');
@@ -97,6 +96,14 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
+  late Future<bool> _readListData;
+
+  @override
+  void initState() {
+    super.initState();
+    _readListData = _readList();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -105,43 +112,151 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       body: SafeArea(
-        child: FutureBuilder<Object>(
-          future: null,
-          builder: (context, snapshot) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
+        child: Center(
+          child: FutureBuilder<bool>(
+              future: _readListData,
+              builder: (_, snap) {
+                //final width = MediaQuery.of(context).size.width;
+                //print('FutureBuilder');
+                if (snap.connectionState == ConnectionState.waiting) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                } else if (snap.connectionState == ConnectionState.done) {
+                  if (snap.hasData) {
+                    bool status = snap.data ?? false;
+                    if(status)
+                    {
+                      int length = PurchasesList.length;
+                      return ListView.builder(
+                          itemCount: length,
+                          itemBuilder: (_, index) {
+                            Purchase purchase = PurchasesList.get(index)!;
+                            bool bought =  purchase.bought;
+                            return Card(
+                              elevation: 5,
+                              margin: const EdgeInsets.all(10),
+                              child: GestureDetector(
+                                onTap: () async {
+                                  //              = [Add  , Mod , Brk , Rem ,];
+                                  List<bool> vis1 = [false, true, true, false,];
+                                  await _showCustomDialog(vis1, purchase);
+                                  developer.log(PurchasesList().toString());
+                                  setState(() {_readListData = _readList();});
+                                },
+                                child: SizedBox(
+                                    width: double.infinity,
+                                    height: 80,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Center(
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
 
-                  const Text(
-                    'You have pushed the button this many times:',
-                  ),
-                  Text(
-                    '$_counter',
-                    style: Theme.of(context).textTheme.headlineMedium,
-                  ),
-                ],
-              ),
-            );
-          }
+                                          children: [
+                                            Expanded(
+                                              child: MouseRegion(
+                                                cursor: SystemMouseCursors.click,
+                                                child: Text(purchase.toString(),
+                                                  style: TextStyle(
+                                                    backgroundColor: Colors.lightGreenAccent.withOpacity(0.1),
+                                                    decoration: bought?TextDecoration.lineThrough:null,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                            Row(
+                                              children: [
+                                                Row(
+                                                  children: [
+                                                    const Text('Buy'),
+                                                    Switch(
+                                                      value: bought,
+                                                      activeColor: Colors.red,
+                                                      onChanged: (bool value) {
+                                                        if(bought != value) {
+                                                          PurchasesList.mod(purchase.copyWith(
+                                                            bought: value,
+                                                          ));
+                                                          bought = value;
+                                                          setState(() {
+                                                             //_readListData = _readList();
+                                                          });
+                                                        }
+                                                      },
+                                                    ),
+                                                  ],
+                                                ),
+                                                ElevatedButton(
+                                                    onPressed: () {
+                                                      PurchasesList.rem(index);
+                                                      setState(() {_readListData = _readList();});
+                                                    },
+                                                    child: const Text('Remove')),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    )),
+                              ),
+                            );
+                          });
+                    }
+                  }
+                  return Center(
+                    child: Column(children: [
+                      const Text('hasError'),
+                      ElevatedButton(
+                          onPressed: () => setState(() {_readListData = _readList();}),
+                          child: const Text('Refresh'))
+                    ]),
+                  );
+                } else if (snap.hasError) {
+                  return Center(
+                    child: Column(children: [
+                      const Text('hasError'),
+                      ElevatedButton(
+                          onPressed: () => setState(() {_readListData = _readList();}),
+                          child: const Text('Refresh'))
+                    ]),
+                  );
+                } else {
+                  return Center(
+                    child: Column(children: [
+                      const Text('no data'),
+                      ElevatedButton(
+                          onPressed: () => setState(() {_readListData = _readList();}),
+                          child: const Text('Refresh'))
+                    ]),
+                  );
+                }
+              }),
         ),
       ),
       floatingActionButton: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          FloatingActionButton(
-            onPressed: _incrementCounter,
-            tooltip: 'Add in ...',
-            child: const Icon(Icons.add_box_outlined),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: FloatingActionButton(
+              onPressed: _add,
+              tooltip: 'Add in ...',
+              child: const Icon(Icons.add_box_outlined),
+            ),
           ),
-          FloatingActionButton(
-            onPressed: (){
-              PurchasesList.remAll();
-              developer.log(PurchasesList().toString());
-            },
-            tooltip: 'Remove All',
-            child: const Icon(Icons.remove_shopping_cart_outlined),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: FloatingActionButton(
+              onPressed: (){
+                PurchasesList.remAll();
+                developer.log(PurchasesList().toString());
+                setState(() {_readListData = _readList();});
+              },
+              tooltip: 'Remove All',
+              child: const Icon(Icons.remove_shopping_cart_outlined),
+            ),
           ),
         ],
       ),

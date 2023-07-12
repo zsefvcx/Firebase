@@ -6,6 +6,7 @@ part of 'purchases.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
+// ignore: non_constant_identifier_names
 _$_Purchasese _$$_PurchaseseFromJson(Map<String, dynamic> json) =>
     _$_Purchasese(
       id: json['id'] as int,
@@ -16,6 +17,7 @@ _$_Purchasese _$$_PurchaseseFromJson(Map<String, dynamic> json) =>
       bought: json['bought'] as bool,
     );
 
+// ignore: non_constant_identifier_names
 Map<String, dynamic> _$$_PurchaseseToJson(_$_Purchasese instance) =>
     <String, dynamic>{
       'id': instance.id,
