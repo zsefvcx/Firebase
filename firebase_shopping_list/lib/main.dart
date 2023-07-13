@@ -65,7 +65,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future<bool> _readList() async {
     try {
-      await Future.delayed(const Duration(milliseconds: 2000));
+      await Future.delayed(const Duration(milliseconds: 5));
       return true;
     } catch (e) {
       developer.log(e.toString());
