@@ -21,6 +21,8 @@ Purchase _$PurchaseFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$Purchase {
   int get id => throw _privateConstructorUsedError;
+  bool get group => throw _privateConstructorUsedError;
+  int get groupId => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
   int get price => throw _privateConstructorUsedError;
   int get count => throw _privateConstructorUsedError;
@@ -39,7 +41,14 @@ abstract class $PurchaseCopyWith<$Res> {
       _$PurchaseCopyWithImpl<$Res, Purchase>;
   @useResult
   $Res call(
-      {int id, String name, int price, int count, String unit, bool bought});
+      {int id,
+      bool group,
+      int groupId,
+      String name,
+      int price,
+      int count,
+      String unit,
+      bool bought});
 }
 
 /// @nodoc
@@ -56,6 +65,8 @@ class _$PurchaseCopyWithImpl<$Res, $Val extends Purchase>
   @override
   $Res call({
     Object? id = null,
+    Object? group = null,
+    Object? groupId = null,
     Object? name = null,
     Object? price = null,
     Object? count = null,
@@ -66,6 +77,14 @@ class _$PurchaseCopyWithImpl<$Res, $Val extends Purchase>
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
+              as int,
+      group: null == group
+          ? _value.group
+          : group // ignore: cast_nullable_to_non_nullable
+              as bool,
+      groupId: null == groupId
+          ? _value.groupId
+          : groupId // ignore: cast_nullable_to_non_nullable
               as int,
       name: null == name
           ? _value.name
@@ -99,7 +118,14 @@ abstract class _$$_PurchaseseCopyWith<$Res> implements $PurchaseCopyWith<$Res> {
   @override
   @useResult
   $Res call(
-      {int id, String name, int price, int count, String unit, bool bought});
+      {int id,
+      bool group,
+      int groupId,
+      String name,
+      int price,
+      int count,
+      String unit,
+      bool bought});
 }
 
 /// @nodoc
@@ -114,6 +140,8 @@ class __$$_PurchaseseCopyWithImpl<$Res>
   @override
   $Res call({
     Object? id = null,
+    Object? group = null,
+    Object? groupId = null,
     Object? name = null,
     Object? price = null,
     Object? count = null,
@@ -124,6 +152,14 @@ class __$$_PurchaseseCopyWithImpl<$Res>
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
+              as int,
+      group: null == group
+          ? _value.group
+          : group // ignore: cast_nullable_to_non_nullable
+              as bool,
+      groupId: null == groupId
+          ? _value.groupId
+          : groupId // ignore: cast_nullable_to_non_nullable
               as int,
       name: null == name
           ? _value.name
@@ -154,6 +190,8 @@ class __$$_PurchaseseCopyWithImpl<$Res>
 class _$_Purchasese with DiagnosticableTreeMixin implements _Purchasese {
   const _$_Purchasese(
       {required this.id,
+      required this.group,
+      required this.groupId,
       required this.name,
       required this.price,
       required this.count,
@@ -165,6 +203,10 @@ class _$_Purchasese with DiagnosticableTreeMixin implements _Purchasese {
 
   @override
   final int id;
+  @override
+  final bool group;
+  @override
+  final int groupId;
   @override
   final String name;
   @override
@@ -178,7 +220,7 @@ class _$_Purchasese with DiagnosticableTreeMixin implements _Purchasese {
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'Purchase(id: $id, name: $name, price: $price, count: $count, unit: $unit, bought: $bought)';
+    return 'Purchase(id: $id, group: $group, groupId: $groupId, name: $name, price: $price, count: $count, unit: $unit, bought: $bought)';
   }
 
   @override
@@ -187,6 +229,8 @@ class _$_Purchasese with DiagnosticableTreeMixin implements _Purchasese {
     properties
       ..add(DiagnosticsProperty('type', 'Purchase'))
       ..add(DiagnosticsProperty('id', id))
+      ..add(DiagnosticsProperty('group', group))
+      ..add(DiagnosticsProperty('groupId', groupId))
       ..add(DiagnosticsProperty('name', name))
       ..add(DiagnosticsProperty('price', price))
       ..add(DiagnosticsProperty('count', count))
@@ -200,6 +244,8 @@ class _$_Purchasese with DiagnosticableTreeMixin implements _Purchasese {
         (other.runtimeType == runtimeType &&
             other is _$_Purchasese &&
             (identical(other.id, id) || other.id == id) &&
+            (identical(other.group, group) || other.group == group) &&
+            (identical(other.groupId, groupId) || other.groupId == groupId) &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.price, price) || other.price == price) &&
             (identical(other.count, count) || other.count == count) &&
@@ -209,8 +255,8 @@ class _$_Purchasese with DiagnosticableTreeMixin implements _Purchasese {
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, id, name, price, count, unit, bought);
+  int get hashCode => Object.hash(
+      runtimeType, id, group, groupId, name, price, count, unit, bought);
 
   @JsonKey(ignore: true)
   @override
@@ -229,6 +275,8 @@ class _$_Purchasese with DiagnosticableTreeMixin implements _Purchasese {
 abstract class _Purchasese implements Purchase {
   const factory _Purchasese(
       {required final int id,
+      required final bool group,
+      required final int groupId,
       required final String name,
       required final int price,
       required final int count,
@@ -240,6 +288,10 @@ abstract class _Purchasese implements Purchase {
 
   @override
   int get id;
+  @override
+  bool get group;
+  @override
+  int get groupId;
   @override
   String get name;
   @override

@@ -1,9 +1,11 @@
 import 'dart:developer' as developer;
+import 'dart:ui';
 
+import 'package:firebase_shopping_list/domain/domain.dart';
+import 'package:firebase_shopping_list/widget/widget.dart';
 import 'package:flutter/material.dart';
 
 import 'core/purchases.dart';
-import 'widget/widget.dart';
 
 void main() {
   runApp(const MyApp());
@@ -35,9 +37,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
   Future<void> _add() async {
-    final int id =  PurchasesList.length;
+    final int id = PurchasesList.length;
     Purchase data = Purchase(
       id: id,
       name: '',
@@ -45,54 +46,30 @@ class _MyHomePageState extends State<MyHomePage> {
       price: 0,
       unit: 'шт.',
       bought: false,
+      group: false,
+      groupId: -1,
     );
-    //             = [Add , Mod  , Brk , Rem  ,];
-    List<bool> vis = [true, false, true, false,];
-    await _showCustomDialog(vis, data);
+    //             = [Add , Mod  , Brk , Rem   ];
+    List<bool> vis = [
+      true,
+      false,
+      true,
+      false,
+    ];
+    await showCustomDialog(vis, data, context);
     developer.log(PurchasesList().toString());
-    setState(() {_readListData = _readList();});
+    setState(() {
+      _readListData = _readList();
+    });
   }
 
   Future<bool> _readList() async {
     try {
-      await Future.delayed(const Duration(microseconds: 100));
+      await Future.delayed(const Duration(milliseconds: 2000));
       return true;
     } catch (e) {
       developer.log(e.toString());
       return false;
-    }
-  }
-
-  Future<void> _showCustomDialog(List<bool> vis, Purchase dt) async {
-     switch (await showDialog<(StatusOfAddingPurchases, Purchase)>(
-      context: context,
-      builder: (BuildContext context) {
-        return ShoppingListModWidget(vis: vis, data: dt);
-    }).then((value) {
-      if (value == null){
-        return (null);
-      } else {
-        return (value);
-      }
-    })) {
-      case (StatusOfAddingPurchases.add, Purchase data):
-        developer.log('${StatusOfAddingPurchases.add}');
-        PurchasesList.add(data);
-        break;
-      case ((StatusOfAddingPurchases.brk, _) || (StatusOfAddingPurchases.def, _)):
-        developer.log('${StatusOfAddingPurchases.brk}');
-        break;
-      case (StatusOfAddingPurchases.rem, Purchase data):
-        developer.log('${StatusOfAddingPurchases.rem}');
-        PurchasesList.rem(data.id);
-        break;
-      case (StatusOfAddingPurchases.mod, Purchase data):
-        developer.log('${StatusOfAddingPurchases.mod}');
-        PurchasesList.mod(data);
-        break;
-      case null:
-        developer.log('null');
-        break;
     }
   }
 
@@ -122,114 +99,164 @@ class _MyHomePageState extends State<MyHomePage> {
                   return const Center(
                     child: CircularProgressIndicator(),
                   );
-                } else if (snap.connectionState == ConnectionState.done) {
+                } else if (snap.connectionState  == ConnectionState.done) {
                   if (snap.hasData) {
                     bool status = snap.data ?? false;
-                    if(status)
-                    {
+                    if (status) {
                       int length = PurchasesList.length;
-                      return ListView.builder(
-                          itemCount: length,
-                          itemBuilder: (_, index) {
-                            Purchase purchase = PurchasesList.get(index)!;
-                            bool bought =  purchase.bought;
-                            return Card(
-                              elevation: 5,
-                              margin: const EdgeInsets.all(10),
-                              child: GestureDetector(
-                                onTap: () async {
-                                  //              = [Add  , Mod , Brk , Rem ,];
-                                  List<bool> vis1 = [false, true, true, false,];
-                                  await _showCustomDialog(vis1, purchase);
-                                  developer.log(PurchasesList().toString());
-                                  setState(() {_readListData = _readList();});
-                                },
-                                child: SizedBox(
-                                    width: double.infinity,
-                                    height: 80,
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Center(
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-
-                                          children: [
-                                            Expanded(
-                                              child: MouseRegion(
-                                                cursor: SystemMouseCursors.click,
-                                                child: Text(purchase.toString(),
-                                                  style: TextStyle(
-                                                    backgroundColor: Colors.lightGreenAccent.withOpacity(0.1),
-                                                    decoration: bought?TextDecoration.lineThrough:null,
+                      return RefreshIndicator(
+                        onRefresh: () async {
+                          _readListData = _readList();
+                          await _readListData;
+                        },
+                        child: ScrollConfiguration(
+                          // + windows
+                          behavior: ScrollConfiguration.of(context).copyWith(
+                            dragDevices: {
+                              PointerDeviceKind.touch,
+                              PointerDeviceKind.mouse,
+                            },
+                          ),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: ListView.builder(
+                                    itemCount: length,
+                                    itemBuilder: (_, id) {
+                                      Purchase purchase = PurchasesList.get(id)!;
+                                      bool bought = purchase.bought;
+                                      bool group = purchase.group;
+                                      return Card(
+                                        elevation: 5,
+                                        margin: const EdgeInsets.all(10),
+                                        child: GestureDetector(
+                                          onTap: () async {
+                                            //              = [Add  , Mod , Brk , Rem ,];
+                                            List<bool> vis1 = [
+                                              false,
+                                              true,
+                                              true,
+                                              false,
+                                            ];
+                                            await showCustomDialog(vis1, purchase, context);
+                                            developer.log(PurchasesList().toString());
+                                            setState(() {
+                                              _readListData = _readList();
+                                            });
+                                          },
+                                          child: SizedBox(
+                                              width: double.infinity,
+                                              height: 80,
+                                              child: Padding(
+                                                padding: const EdgeInsets.all(8.0),
+                                                child: Center(
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.spaceBetween,
+                                                    children: [
+                                                      Expanded(
+                                                        child: MouseRegion(
+                                                          cursor:
+                                                              SystemMouseCursors.click,
+                                                          child: Text(
+                                                            purchase.toString(),
+                                                            style: TextStyle(
+                                                              backgroundColor: Colors
+                                                                  .lightGreenAccent
+                                                                  .withOpacity(0.1),
+                                                              decoration: bought
+                                                                  ? TextDecoration
+                                                                      .lineThrough
+                                                                  : null,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      Row(
+                                                        children: [
+                                                          Row(
+                                                            children: [
+                                                              const Text('Buy'),
+                                                              Switch(
+                                                                value: bought,
+                                                                activeColor: Colors.red,
+                                                                onChanged: (bool value) {
+                                                                  if (bought != value) {
+                                                                    PurchasesList.mod(
+                                                                        purchase.copyWith(
+                                                                      bought: value,
+                                                                    ));
+                                                                    bought = value;
+                                                                    setState(() {
+                                                                      //_readListData = _readList();
+                                                                    });
+                                                                  }
+                                                                },
+                                                              ),
+                                                            ],
+                                                          ),
+                                                          ElevatedButton(
+                                                              onPressed: () {
+                                                                PurchasesList.rem(id, group);
+                                                                setState(() {
+                                                                  _readListData =
+                                                                      _readList();
+                                                                });
+                                                              },
+                                                              child: const Icon(Icons.remove)),
+                                                        ],
+                                                      ),
+                                                    ],
                                                   ),
                                                 ),
-                                              ),
-                                            ),
-                                            Row(
-                                              children: [
-                                                Row(
-                                                  children: [
-                                                    const Text('Buy'),
-                                                    Switch(
-                                                      value: bought,
-                                                      activeColor: Colors.red,
-                                                      onChanged: (bool value) {
-                                                        if(bought != value) {
-                                                          PurchasesList.mod(purchase.copyWith(
-                                                            bought: value,
-                                                          ));
-                                                          bought = value;
-                                                          setState(() {
-                                                             //_readListData = _readList();
-                                                          });
-                                                        }
-                                                      },
-                                                    ),
-                                                  ],
-                                                ),
-                                                ElevatedButton(
-                                                    onPressed: () {
-                                                      PurchasesList.rem(index);
-                                                      setState(() {_readListData = _readList();});
-                                                    },
-                                                    child: const Text('Remove')),
-                                              ],
-                                            ),
-                                          ],
+                                              )),
                                         ),
-                                      ),
-                                    )),
+                                      );
+                                    }),
                               ),
-                            );
-                          });
+                              // Container(
+                              //   decoration: BoxDecoration(
+                              //     border: Border.all(
+                              //       width: 2,
+                              //
+                              //     ),
+                              //     borderRadius: const BorderRadius.all(Radius.circular(20)),
+                              //   ),
+                              //   width: 95,
+                              //   child: OverflowBox(
+                              //     alignment: Alignment.topCenter,
+                              //     maxHeight: double.infinity,
+                              //     child: Column(
+                              //       children: [
+                              //         ...'SHOPPING'.split('').map((e) => FittedBox(
+                              //           child: Text(e,
+                              //             style: const TextStyle(
+                              //               fontWeight: FontWeight.bold,
+                              //               fontSize: 40,
+                              //             ),
+                              //           ),
+                              //         )).toList(),
+                              //       ],
+                              //     ),
+                              //   ),
+                              // )
+                            ],
+                          ),
+                        ),
+                      );
                     }
                   }
-                  return Center(
-                    child: Column(children: [
-                      const Text('hasError'),
-                      ElevatedButton(
-                          onPressed: () => setState(() {_readListData = _readList();}),
-                          child: const Text('Refresh'))
-                    ]),
-                  );
+                  return inErrorCenter('hasError', () => setState(() {
+                    _readListData = _readList();
+                  }));
                 } else if (snap.hasError) {
-                  return Center(
-                    child: Column(children: [
-                      const Text('hasError'),
-                      ElevatedButton(
-                          onPressed: () => setState(() {_readListData = _readList();}),
-                          child: const Text('Refresh'))
-                    ]),
-                  );
+                  return inErrorCenter('hasError', () => setState(() {
+                    _readListData = _readList();
+                  }));
                 } else {
-                  return Center(
-                    child: Column(children: [
-                      const Text('no data'),
-                      ElevatedButton(
-                          onPressed: () => setState(() {_readListData = _readList();}),
-                          child: const Text('Refresh'))
-                    ]),
-                  );
+                  return inErrorCenter('No data', () => setState(() {
+                    _readListData = _readList();
+                  }));
                 }
               }),
         ),
@@ -249,10 +276,12 @@ class _MyHomePageState extends State<MyHomePage> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: FloatingActionButton(
-              onPressed: (){
+              onPressed: () {
                 PurchasesList.remAll();
                 developer.log(PurchasesList().toString());
-                setState(() {_readListData = _readList();});
+                setState(() {
+                  _readListData = _readList();
+                });
               },
               tooltip: 'Remove All',
               child: const Icon(Icons.remove_shopping_cart_outlined),
@@ -260,6 +289,17 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget inErrorCenter(String err, void Function() f,) {
+    return Center(
+      child: Column(children: [
+        Text(err),
+        ElevatedButton(
+            onPressed: () => f(),
+            child: const Text('Refresh'))
+      ]),
     );
   }
 }
