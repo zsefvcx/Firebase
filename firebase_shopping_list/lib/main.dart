@@ -2,6 +2,7 @@ import 'dart:developer' as developer;
 import 'dart:ui';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_shopping_list/domain/domain.dart';
 import 'package:firebase_shopping_list/widget/widget.dart';
@@ -48,6 +49,8 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final storage = FirebaseStorage.instance;
 
+  late CollectionReference<Purchase> _purchases;
+
   Future<void> _add() async {
     final int id = PurchasesList.length;
     Purchase data = Purchase(
@@ -90,6 +93,8 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
     _readListData = _readList();
+
+    _purchases
   }
 
   @override
