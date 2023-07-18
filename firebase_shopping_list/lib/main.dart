@@ -1,9 +1,11 @@
 import 'dart:developer' as developer;
 import 'dart:ui';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_shopping_list/domain/domain.dart';
 import 'package:firebase_shopping_list/widget/widget.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 
 import 'core/purchases.dart';
@@ -44,6 +46,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  final storage = FirebaseStorage.instance;
+
   Future<void> _add() async {
     final int id = PurchasesList.length;
     Purchase data = Purchase(
@@ -93,7 +97,28 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
+        title: Row(
+          children: [
+            SizedBox(
+              height: 100,
+              child: FutureBuilder<String>(
+                future: storage.ref('img.jpg').getDownloadURL(),
+                builder: (context, snapshot) => snapshot.connectionState == ConnectionState.done?
+                CachedNetworkImage(
+                  imageUrl: snapshot.data!,
+                  progressIndicatorBuilder: (context, url, downloadProgress) =>
+                      CircularProgressIndicator(value: downloadProgress.progress),
+                  errorWidget: (context, url, error) => const Icon(Icons.error),
+                )
+                    : const SizedBox(height: 100, child: CircularProgressIndicator())
+                ,),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(widget.title, style: const TextStyle(color: Colors.white),),
+            ),
+          ],
+        ),
       ),
       body: SafeArea(
         child: Center(
