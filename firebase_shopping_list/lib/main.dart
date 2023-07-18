@@ -1,13 +1,20 @@
 import 'dart:developer' as developer;
 import 'dart:ui';
 
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_shopping_list/domain/domain.dart';
 import 'package:firebase_shopping_list/widget/widget.dart';
 import 'package:flutter/material.dart';
 
 import 'core/purchases.dart';
 
-void main() {
+import 'firebase_options.dart';
+
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
   runApp(const MyApp());
 }
 
