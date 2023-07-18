@@ -107,10 +107,10 @@ class _MyHomePageState extends State<MyHomePage> {
                 CachedNetworkImage(
                   imageUrl: snapshot.data!,
                   progressIndicatorBuilder: (context, url, downloadProgress) =>
-                      CircularProgressIndicator(value: downloadProgress.progress),
+                      Center(child: CircularProgressIndicator(value: downloadProgress.progress)),
                   errorWidget: (context, url, error) => const Icon(Icons.error),
                 )
-                    : const SizedBox(height: 100, child: CircularProgressIndicator())
+                    : const SizedBox(height: 100, child: Center(child: CircularProgressIndicator()))
                 ,),
             ),
             Padding(
