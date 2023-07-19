@@ -81,9 +81,25 @@ class _MyHomePageState extends State<MyHomePage> {
                   sortFilter = !sortFilter;
                 });
               },
-              tooltip: 'Sort by ...',
+              tooltip: 'Sort by price',
               child: sortFilter?const Icon(MyFlutterApp.sort_amount_up):const Icon(MyFlutterApp.sort_amount_down),
             ),
+          ),
+          Row(
+            children: [
+              const Text('Show not Buy'),
+              Switch(
+                value: buyFilter,
+                activeColor: Colors.red,
+                onChanged: (bool value) async {
+                  if (buyFilter != value) {
+                    setState(() {
+                      buyFilter = value;
+                    });
+                  }
+                },
+              ),
+            ],
           ),
         ],
         title: FutureBuilder<String>(
@@ -105,20 +121,22 @@ class _MyHomePageState extends State<MyHomePage> {
               stream:
               buyFilter?
               PurchasesList.purchases0
-                  .orderBy('price', descending: sortFilter)
-                  //.where('bought', isEqualTo: false)
+                  //.orderBy('price', descending: sortFilter)
+                  .where('bought', isEqualTo: false)
                   .snapshots()
                   .map((e) {
                 return e.docs.map((e) {
                   return (e.id, e.data());
                 }).toList();
               })
-              :PurchasesList.purchases0.snapshots()
-              .map((e) {
-                return e.docs.map((e) {
-                  return (e.id, e.data());
-                }).toList();
-              }),
+              :PurchasesList.purchases0
+                  .orderBy('price', descending: sortFilter)
+                  .snapshots()
+                  .map((e) {
+                    return e.docs.map((e) {
+                      return (e.id, e.data());
+                    }).toList();
+                  }),
               builder: (_, snap) {
                 //final width = MediaQuery.of(context).size.width;
                 //print('FutureBuilder');
