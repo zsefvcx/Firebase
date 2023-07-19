@@ -86,7 +86,7 @@ class _MyAppState extends State<MyApp> {
 
   Future<void> singInAnonymously() async {
     try {
-      final userCredential =
+      //final userCredential =
       await FirebaseAuth.instance.signInAnonymously();
       print("Signed in with temporary account.");
     } on FirebaseAuthException catch (e) {
@@ -128,7 +128,7 @@ class _MyAppState extends State<MyApp> {
       return await FirebaseAuth.instance.signInWithCredential(
           githubAuthCredential);
     } catch(e, s){
-      print('120:$s $e');
+      print('131:$s $e');
       throw('$s $e');
     }
    }

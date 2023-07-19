@@ -2,15 +2,12 @@ import 'dart:developer' as developer;
 import 'dart:ui';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_shopping_list/core/core.dart';
 import 'package:firebase_shopping_list/domain/domain.dart';
 import 'package:firebase_shopping_list/widget/widget.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-
-import '../core/my_flutter_app_icons.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
@@ -58,7 +55,7 @@ class _MyHomePageState extends State<MyHomePage> {
   //   }
   // }
 
-  late Future<bool> _readListData;
+  //late Future<bool> _readListData;
 
   bool buyFilter = true;
   bool sortFilter = true;
@@ -87,7 +84,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           Row(
             children: [
-              const Text('Show not Buy'),
+              const Text('Hide Buy'),
               Switch(
                 value: buyFilter,
                 activeColor: Colors.red,
@@ -121,8 +118,8 @@ class _MyHomePageState extends State<MyHomePage> {
               stream:
               buyFilter?
               PurchasesList.purchases0
-                  //.orderBy('price', descending: sortFilter)
                   .where('bought', isEqualTo: false)
+                  .orderBy('price', descending: sortFilter)
                   .snapshots()
                   .map((e) {
                 return e.docs.map((e) {
@@ -140,11 +137,11 @@ class _MyHomePageState extends State<MyHomePage> {
               builder: (_, snap) {
                 //final width = MediaQuery.of(context).size.width;
                 //print('FutureBuilder');
-                if (snap.connectionState == ConnectionState.waiting) {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                } else if (snap.connectionState  == ConnectionState.active) {
+                // if (snap.connectionState == ConnectionState.waiting) {
+                //   return const Center(
+                //     child: CircularProgressIndicator(),
+                //   );
+                // } else if (snap.connectionState  == ConnectionState.active) {
                   if (snap.hasData) {
                     bool status = true;//snap.data ?? false;
                     List<(String, Purchase)> purchasesList = snap.data??[];
@@ -277,22 +274,26 @@ class _MyHomePageState extends State<MyHomePage> {
                         ),
                       );
                     }
+                  } else {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
                   }
-                  return inErrorCenter('hasError', () {
-                    print(snap.connectionState);
-                    print(snap.data);
-                  });
-                } else if (snap.hasError) {
-                  print(snap.connectionState);
-                  print(snap.data);
-                  return inErrorCenter('hasError', () {
-                  });
-                } else {
-                  print(snap.connectionState);
-                  print(snap.data);
-                  return inErrorCenter('No data', () {
-                  });
-                }
+                  // return inErrorCenter('hasError', () {
+                  //   print(snap.connectionState);
+                  //   print(snap.data);
+                  // });
+                // } else if (snap.hasError) {
+                //   print(snap.connectionState);
+                //   print(snap.data);
+                //   return inErrorCenter('hasError', () {
+                //   });
+                // } else {
+                //   print(snap.connectionState);
+                //   print(snap.data);
+                //   return inErrorCenter('No data', () {
+                //   });
+                // }
               }),
         ),
       ),
