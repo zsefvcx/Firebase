@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 
 import '../core/core.dart';
 
-Future<void> showCustomDialog(List<bool> vis, Purchase dt, BuildContext context) async {
+Future<void> showCustomDialog(List<bool> vis, Purchase dt, BuildContext context, String id) async {
   switch (await showDialog<(StatusOfAddingPurchases, Purchase)>(
       context: context,
       builder: (BuildContext context) {
@@ -28,11 +28,11 @@ Future<void> showCustomDialog(List<bool> vis, Purchase dt, BuildContext context)
       break;
     case (StatusOfAddingPurchases.rem, Purchase data):
       developer.log('${StatusOfAddingPurchases.rem}');
-      PurchasesList.rem(data.id, data.group);
+      PurchasesList.rem(id, data.group);
       break;
     case (StatusOfAddingPurchases.mod, Purchase data):
       developer.log('${StatusOfAddingPurchases.mod}');
-      PurchasesList.mod(data);
+      PurchasesList.mod(id, data);
       break;
     case null:
       developer.log('null');

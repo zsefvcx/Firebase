@@ -1,15 +1,12 @@
-import 'dart:developer' as developer;
-import 'dart:ui';
 
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_shopping_list/domain/domain.dart';
 import 'package:firebase_shopping_list/widget/widget.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 
-import 'core/purchases.dart';
+import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 import 'firebase_options.dart';
 
@@ -17,6 +14,8 @@ import 'firebase_options.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  PurchasesList.init();
 
   runApp(const MyApp());
 }
@@ -32,311 +31,54 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Firebase Shopping List'),
+      home: StreamBuilder<User?>(
+        stream: FirebaseAuth.instance.userChanges(),
+        builder: (context, snapshot) {
+          if(!snapshot.hasData){
+            return ElevatedButton(onPressed: singIn,
+                child: const Text('login');
+            );
+          } else {
+            return const MyHomePage(title: 'Firebase Shopping List');
+          }
+
+        },
+      )
     );
   }
-}
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  final storage = FirebaseStorage.instance;
-
-  late CollectionReference<Purchase> _purchases;
-
-  Future<void> _add() async {
-    final int id = PurchasesList.length;
-    Purchase data = Purchase(
-      id: id,
-      name: '',
-      count: 0,
-      price: 0,
-      unit: 'шт.',
-      bought: false,
-      group: false,
-      groupId: -1,
-    );
-    //             = [Add , Mod  , Brk , Rem   ];
-    List<bool> vis = [
-      true,
-      false,
-      true,
-      false,
-    ];
-    await showCustomDialog(vis, data, context);
-    developer.log(PurchasesList().toString());
-    setState(() {
-      _readListData = _readList();
-    });
-  }
-
-  Future<bool> _readList() async {
-    try {
-      await Future.delayed(const Duration(milliseconds: 5));
-      return true;
-    } catch (e) {
-      developer.log(e.toString());
-      return false;
+  void singIn(){
+    if(kIsWeb){
+      singInWithGoogleWeb();
+    } else {
+      singInWithGoogle();
     }
+
   }
 
-  late Future<bool> _readListData;
+  Future<UserCredential?> singInWithGoogle() async {
+    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+    print(googleUser?.email);
+    if(googleUser != null){
+      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
 
-  @override
-  void initState() {
-    super.initState();
-    _readListData = _readList();
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+      return await FirebaseAuth.instance.signInWithCredential(credential);
+    }
 
-    _purchases
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Row(
-          children: [
-            SizedBox(
-              height: 100,
-              child: FutureBuilder<String>(
-                future: storage.ref('img.jpg').getDownloadURL(),
-                builder: (context, snapshot) => snapshot.connectionState == ConnectionState.done?
-                CachedNetworkImage(
-                  imageUrl: snapshot.data!,
-                  progressIndicatorBuilder: (context, url, downloadProgress) =>
-                      Center(child: CircularProgressIndicator(value: downloadProgress.progress)),
-                  errorWidget: (context, url, error) => const Icon(Icons.error),
-                )
-                    : const SizedBox(height: 100, child: Center(child: CircularProgressIndicator()))
-                ,),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(widget.title, style: const TextStyle(color: Colors.white),),
-            ),
-          ],
-        ),
-      ),
-      body: SafeArea(
-        child: Center(
-          child: FutureBuilder<bool>(
-              future: _readListData,
-              builder: (_, snap) {
-                //final width = MediaQuery.of(context).size.width;
-                //print('FutureBuilder');
-                if (snap.connectionState == ConnectionState.waiting) {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                } else if (snap.connectionState  == ConnectionState.done) {
-                  if (snap.hasData) {
-                    bool status = snap.data ?? false;
-                    if (status) {
-                      int length = PurchasesList.length;
-                      return RefreshIndicator(
-                        onRefresh: () async {
-                          _readListData = _readList();
-                          await _readListData;
-                        },
-                        child: ScrollConfiguration(
-                          // + windows
-                          behavior: ScrollConfiguration.of(context).copyWith(
-                            dragDevices: {
-                              PointerDeviceKind.touch,
-                              PointerDeviceKind.mouse,
-                            },
-                          ),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: ListView.builder(
-                                    itemCount: length,
-                                    itemBuilder: (_, id) {
-                                      Purchase purchase = PurchasesList.get(id)!;
-                                      bool bought = purchase.bought;
-                                      bool group = purchase.group;
-                                      return Card(
-                                        elevation: 5,
-                                        margin: const EdgeInsets.all(10),
-                                        child: GestureDetector(
-                                          onTap: () async {
-                                            //              = [Add  , Mod , Brk , Rem ,];
-                                            List<bool> vis1 = [
-                                              false,
-                                              true,
-                                              true,
-                                              false,
-                                            ];
-                                            await showCustomDialog(vis1, purchase, context);
-                                            developer.log(PurchasesList().toString());
-                                            setState(() {
-                                              _readListData = _readList();
-                                            });
-                                          },
-                                          child: SizedBox(
-                                              width: double.infinity,
-                                              height: 80,
-                                              child: Padding(
-                                                padding: const EdgeInsets.all(8.0),
-                                                child: Center(
-                                                  child: Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment.spaceBetween,
-                                                    children: [
-                                                      Expanded(
-                                                        child: MouseRegion(
-                                                          cursor:
-                                                              SystemMouseCursors.click,
-                                                          child: Text(
-                                                            purchase.toString(),
-                                                            style: TextStyle(
-                                                              backgroundColor: Colors
-                                                                  .lightGreenAccent
-                                                                  .withOpacity(0.1),
-                                                              decoration: bought
-                                                                  ? TextDecoration
-                                                                      .lineThrough
-                                                                  : null,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      Row(
-                                                        children: [
-                                                          Row(
-                                                            children: [
-                                                              const Text('Buy'),
-                                                              Switch(
-                                                                value: bought,
-                                                                activeColor: Colors.red,
-                                                                onChanged: (bool value) {
-                                                                  if (bought != value) {
-                                                                    PurchasesList.mod(
-                                                                        purchase.copyWith(
-                                                                      bought: value,
-                                                                    ));
-                                                                    bought = value;
-                                                                    setState(() {
-                                                                      //_readListData = _readList();
-                                                                    });
-                                                                  }
-                                                                },
-                                                              ),
-                                                            ],
-                                                          ),
-                                                          ElevatedButton(
-                                                              onPressed: () {
-                                                                PurchasesList.rem(id, group);
-                                                                setState(() {
-                                                                  _readListData =
-                                                                      _readList();
-                                                                });
-                                                              },
-                                                              child: const Icon(Icons.remove)),
-                                                        ],
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              )),
-                                        ),
-                                      );
-                                    }),
-                              ),
-                              // Container(
-                              //   decoration: BoxDecoration(
-                              //     border: Border.all(
-                              //       width: 2,
-                              //
-                              //     ),
-                              //     borderRadius: const BorderRadius.all(Radius.circular(20)),
-                              //   ),
-                              //   width: 95,
-                              //   child: OverflowBox(
-                              //     alignment: Alignment.topCenter,
-                              //     maxHeight: double.infinity,
-                              //     child: Column(
-                              //       children: [
-                              //         ...'SHOPPING'.split('').map((e) => FittedBox(
-                              //           child: Text(e,
-                              //             style: const TextStyle(
-                              //               fontWeight: FontWeight.bold,
-                              //               fontSize: 40,
-                              //             ),
-                              //           ),
-                              //         )).toList(),
-                              //       ],
-                              //     ),
-                              //   ),
-                              // )
-                            ],
-                          ),
-                        ),
-                      );
-                    }
-                  }
-                  return inErrorCenter('hasError', () => setState(() {
-                    _readListData = _readList();
-                  }));
-                } else if (snap.hasError) {
-                  return inErrorCenter('hasError', () => setState(() {
-                    _readListData = _readList();
-                  }));
-                } else {
-                  return inErrorCenter('No data', () => setState(() {
-                    _readListData = _readList();
-                  }));
-                }
-              }),
-        ),
-      ),
-      floatingActionButton: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: FloatingActionButton(
-              onPressed: _add,
-              tooltip: 'Add in ...',
-              child: const Icon(Icons.add_box_outlined),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: FloatingActionButton(
-              onPressed: () {
-                PurchasesList.remAll();
-                developer.log(PurchasesList().toString());
-                setState(() {
-                  _readListData = _readList();
-                });
-              },
-              tooltip: 'Remove All',
-              child: const Icon(Icons.remove_shopping_cart_outlined),
-            ),
-          ),
-        ],
-      ),
-    );
+  Future<UserCredential?> singInWithGoogleWeb() async {
+
+    GoogleAuthProvider googleProvider = GoogleAuthProvider();
+    googleProvider.addScope(scope);
+    googleProvider.setCustomParameters(customOAuthParameters);
+
+    return await FirebaseAuth.instance.signInWithPopup(googleProvider);
+
   }
 
-  Widget inErrorCenter(String err, void Function() f,) {
-    return Center(
-      child: Column(children: [
-        Text(err),
-        ElevatedButton(
-            onPressed: () => f(),
-            child: const Text('Refresh'))
-      ]),
-    );
-  }
 }
