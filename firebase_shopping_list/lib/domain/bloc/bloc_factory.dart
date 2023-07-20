@@ -1,6 +1,10 @@
 
 
+import 'package:firebase_shopping_list/data/service_provider.dart';
+import 'package:firebase_shopping_list/domain/domain.dart';
 import 'package:get_it/get_it.dart';
+
+import 'main_bloc.dart';
 
 class BlocFactory {
   static final _getIt = GetIt.I;
@@ -10,26 +14,11 @@ class BlocFactory {
   static final instance = BlocFactory();
 
   void initialize(){
-    // ServiceProvider.instance.initialize();
-    //
-    // _getIt.registerLazySingleton<MainBloc>(
-    //      () => MainBloc(
-    //       featureRepository:  ServiceProvider.instance.get<FeatureRepository>(),
-    //      ),
-    // );
-    //
-    // _getIt.registerLazySingleton<FavoritesBloc>(
-    //       () => FavoritesBloc(
-    //     favoritesRepository: ServiceProvider.instance.get<FavoritesRepository>(),
-    //   ),
-    // );
-    //
-    // _getIt.registerLazySingleton<ShoppingBasketBloc>(
-    //       () => ShoppingBasketBloc(
-    //     shoppingBasketRepository: ServiceProvider.instance.get<ShoppingBasketRepository>(),
-    //   ),
-    // );
+    ServiceProvider.instance.initialize();
+    _getIt.registerLazySingleton<MainBloc>(
+         () => MainBloc(
+          shoppingListRepository:  ServiceProvider.instance.get<ShoppingListRepository>(),
+         ),
+    );
   }
-
-
 }

@@ -8,6 +8,9 @@ class ShoppingListRemoteDataSourceImpl extends ShoppingListRemoteDataSource{
 
   late final CollectionReference<Purchase> purchases;
 
+  List<PurchasesListModel> purchasesList = [];
+
+
   @override
   void init(){
     purchases = FirebaseFirestore.instance.collection('Purchase').withConverter<Purchase>(
@@ -84,9 +87,9 @@ class ShoppingListRemoteDataSourceImpl extends ShoppingListRemoteDataSource{
   }
 
   @override
-  Stream<List<PurchasesListModel>> getAll({required bool sortFilter, required bool buyFilter}) {
+  Future<List<PurchasesListModel>> getAll({required bool sortFilter, required bool buyFilter}) async {
     if (buyFilter){
-      return purchases
+      return await purchases
           .where('bought', isEqualTo: false)
           .orderBy('price', descending: sortFilter)
           .snapshots()
@@ -94,16 +97,16 @@ class ShoppingListRemoteDataSourceImpl extends ShoppingListRemoteDataSource{
         return e.docs.map((e) {
           return PurchasesListModel(id: e.id, purchase: e.data());
         }).toList();
-      });
+      }).listen((event) => event).asFuture();
     } else {
-      return purchases
+      return await purchases
           .orderBy('price', descending: sortFilter)
           .snapshots()
           .map((e) {
         return e.docs.map((e) {
           return PurchasesListModel(id: e.id, purchase: e.data());
         }).toList();
-      });
+      }).listen((event) => event).asFuture();
     }
   }
 

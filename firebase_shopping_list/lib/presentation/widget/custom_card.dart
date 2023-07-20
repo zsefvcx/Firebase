@@ -1,9 +1,8 @@
-import 'dart:developer' as developer;
-
 import 'package:firebase_shopping_list/core/core.dart';
-import 'package:firebase_shopping_list/domain/domain.dart';
+import 'package:firebase_shopping_list/domain/bloc/main_bloc.dart';
 import 'package:firebase_shopping_list/presentation/widget/widget.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 
 
@@ -34,7 +33,6 @@ class _CustomCardState extends State<CustomCard> {
             false,
           ];
           await showCustomDialog(vis1, widget._purchase, context, widget._id);
-          developer.log(PurchasesList().toString());
         },
         child: SizedBox(
             width: double.infinity,
@@ -72,21 +70,29 @@ class _CustomCardState extends State<CustomCard> {
                             Switch(
                               value: widget._purchase.bought,
                               activeColor: Colors.red,
-                              onChanged: (bool value) async {
+                              onChanged: (bool value) {
                                 if (widget._purchase.bought != value) {
-                                  await PurchasesList.mod(
-                                      widget._id,
-                                      widget._purchase.copyWith(
-                                        bought: value,
-                                      ));
+                                  context.read<MainBloc>().addEvent(
+                                      MainBlocEvent.mod(
+                                        id: widget._id,
+                                        data: widget._purchase.copyWith(
+                                          bought: value,
+                                        ),
+                                      ),
+                                  );
                                 }
                               },
                             ),
                           ],
                         ),
                         ElevatedButton(
-                            onPressed: () async {
-                              await PurchasesList.rem(widget._id, widget._purchase.group);
+                            onPressed: () {
+                              context.read<MainBloc>().addEvent(
+                                  MainBlocEvent.rem(
+                                    id: widget._id,
+                                    grp: widget._purchase.group,
+                                  )
+                              );
                             },
                             child: const Icon(Icons.remove)),
                       ],

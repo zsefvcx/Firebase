@@ -4,10 +4,12 @@ import 'dart:ui';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_shopping_list/core/core.dart';
+import 'package:firebase_shopping_list/domain/bloc/main_bloc.dart';
 import 'package:firebase_shopping_list/domain/domain.dart';
 
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import 'widget/widget.dart';
 
@@ -15,6 +17,7 @@ class MainPage extends StatefulWidget {
   const MainPage({super.key, required this.title});
 
   final String title;
+
 
   @override
   State<MainPage> createState() => _MainPageState();
@@ -25,7 +28,7 @@ class _MainPageState extends State<MainPage> {
 
 
   Future<void> _add() async {
-    final int id = await PurchasesList.length;
+    final int id = await context.read<MainBloc>().length;
     Purchase data = Purchase(
       id: id,
       name: '',
@@ -64,7 +67,6 @@ The code would look something like this on every place the warning shows up:
 */
 
     if (mounted) await showCustomDialog(vis, data, context, '');
-    developer.log(PurchasesList().toString());
   }
 
   bool buyFilter = true;
@@ -84,9 +86,8 @@ The code would look something like this on every place the warning shows up:
             padding: const EdgeInsets.all(8.0),
             child: FloatingActionButton(
               onPressed: (){
-                setState(() {
-                  sortFilter = !sortFilter;
-                });
+                sortFilter = !sortFilter;
+                context.read<MainBloc>().addEvent(MainBlocEvent.getAll(sortFilter: sortFilter, buyFilter: buyFilter));
               },
               tooltip: 'Sort by price',
               child: sortFilter?const Icon(MyFlutterApp.sort_amount_up):const Icon(MyFlutterApp.sort_amount_down),
@@ -100,9 +101,8 @@ The code would look something like this on every place the warning shows up:
                 activeColor: Colors.red,
                 onChanged: (bool value) async {
                   if (buyFilter != value) {
-                    setState(() {
-                      buyFilter = value;
-                    });
+                    buyFilter = value;
+                    context.read<MainBloc>().addEvent(MainBlocEvent.getAll(sortFilter: sortFilter, buyFilter: buyFilter));
                   }
                 },
               ),
@@ -124,85 +124,99 @@ The code would look something like this on every place the warning shows up:
       ),
       body: SafeArea(
         child: Center(
-          child: StreamBuilder<List<(String, Purchase)>>(
-              stream:
-              buyFilter?
-              PurchasesList.purchases
-                  .where('bought', isEqualTo: false)
-                  .orderBy('price', descending: sortFilter)
-                  .snapshots()
-                  .map((e) {
-                return e.docs.map((e) {
-                  return (e.id, e.data());
-                }).toList();
-              })
-              :PurchasesList.purchases
-                  .orderBy('price', descending: sortFilter)
-                  .snapshots()
-                  .map((e) {
-                    return e.docs.map((e) {
-                      return (e.id, e.data());
-                    }).toList();
-                  }),
-              builder: (_, snap) {
-                //final width = MediaQuery.of(context).size.width;
-                //print('FutureBuilder');
-                if (snap.connectionState == ConnectionState.waiting) {
-                   return const Center(
-                     child: CircularProgressIndicator(),
-                   );
-                } else if (snap.connectionState  == ConnectionState.active) {
-                  if (snap.hasData) {
-                    bool status = true;//snap.data ?? false;
-                    List<(String, Purchase)> purchasesList = snap.data??[];
-                    if (status) {
-                      int length = purchasesList.length;
-                      return ScrollConfiguration(
-                        // + windows
-                        behavior: ScrollConfiguration.of(context).copyWith(
-                          dragDevices: {
-                            PointerDeviceKind.touch,
-                            PointerDeviceKind.mouse,
-                          },
-                        ),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: ListView.builder(
-                                  itemCount: length,
-                                  itemBuilder: (_, index) {
-                                    String id; Purchase purchase;
-                                    (id, purchase) = purchasesList[index];
-                                    return CustomCard(id: id, purchase: purchase);
-                                  }),
-                            ),
-                          ],
-                        ),
-                      );
-                    }
+          child: StreamBuilder<MainBlocState>(
+              stream: context.read<MainBloc>().state,
+
+              builder: (_, snapshot){
+                if (snapshot.hasData) {
+                  final state = snapshot.data;
+                  if (state != null) {
+                    return state.map(
+                      loading: (value) {
+                        return const Center(child: CircularProgressIndicator());
+                      },
+                      error: (value) {
+                        throw UnimplementedError();
+                      },
+                      timeOut: (value) {
+                        throw UnimplementedError();
+                      },
+                      isBusy: (value) {
+                        throw UnimplementedError();
+                      },
+                      loaded: (value) {
+                        return const Placeholder();
+                      },
+                    );
                   }
-                   developer.log('${snap.connectionState}');
-                   developer.log('${snap.data}');
-                   return inErrorCenter('hasError', () {
-                     setState(() {
-                     });
-                   });
-                } else if (snap.hasError) {
-                  developer.log('${snap.connectionState}');
-                  developer.log('${snap.data}');
-                  return inErrorCenter('hasError', () {
-                    setState(() {
-                    });
-                  });
-                } else {
-                  developer.log('${snap.connectionState}');
-                  developer.log('${snap.data}');
-                  return inErrorCenter('No data', () {
-                    setState(() {
-                    });
-                  });
                 }
-              }),
+                return const Placeholder();
+              }
+
+              // return StreamBuilder<List<PurchasesListEntities>>(
+              //   stream: context.read<MainBloc>().getAll(
+              //       sortFilter: sortFilter,
+              //       buyFilter: buyFilter
+              //   ),
+              //   builder: (_, snap) {
+              //     //final width = MediaQuery.of(context).size.width;
+              //     //print('FutureBuilder');
+              //     if (snap.connectionState == ConnectionState.waiting) {
+              //        return const Center(
+              //          child: CircularProgressIndicator(),
+              //        );
+              //     } else if (snap.connectionState  == ConnectionState.active) {
+              //       if (snap.hasData) {
+              //         bool status = true;//snap.data ?? false;
+              //         List<PurchasesListEntities> purchasesList = snap.data??[];
+              //         if (status) {
+              //           int length = purchasesList.length;
+              //           return ScrollConfiguration(
+              //             // + windows
+              //             behavior: ScrollConfiguration.of(context).copyWith(
+              //               dragDevices: {
+              //                 PointerDeviceKind.touch,
+              //                 PointerDeviceKind.mouse,
+              //               },
+              //             ),
+              //             child: Row(
+              //               children: [
+              //                 Expanded(
+              //                   child: ListView.builder(
+              //                       itemCount: length,
+              //                       itemBuilder: (_, index) {
+              //                         PurchasesListEntities data  = purchasesList[index];
+              //                         return CustomCard(id: data.id, purchase: data.purchase);
+              //                       }),
+              //                 ),
+              //               ],
+              //             ),
+              //           );
+              //         }
+              //       }
+              //        developer.log('${snap.connectionState}');
+              //        developer.log('${snap.data}');
+              //        return inErrorCenter('hasError', () {
+              //          setState(() {
+              //          });
+              //        });
+              //     } else if (snap.hasError) {
+              //       developer.log('${snap.connectionState}');
+              //       developer.log('${snap.data}');
+              //       return inErrorCenter('hasError', () {
+              //         setState(() {
+              //         });
+              //       });
+              //     } else {
+              //       developer.log('${snap.connectionState}');
+              //       developer.log('${snap.data}');
+              //       return inErrorCenter('No data', () {
+              //         setState(() {
+              //         });
+              //       });
+              //     }
+              //   }),
+          ),
         ),
       ),
       floatingActionButton: Column(
@@ -221,8 +235,7 @@ The code would look something like this on every place the warning shows up:
             padding: const EdgeInsets.all(8.0),
             child: FloatingActionButton(
               onPressed: () {
-                PurchasesList.remAll();
-                developer.log(PurchasesList().toString());
+                context.read<MainBloc>().addEvent(const MainBlocEvent.remAll());
               },
               tooltip: 'Remove All',
               child: const Icon(Icons.remove_shopping_cart_outlined),

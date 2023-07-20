@@ -2,11 +2,16 @@
 import 'dart:developer' as developer;
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_shopping_list/domain/bloc/bloc_factory.dart';
 import 'package:firebase_shopping_list/presentation/main_page.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:github_sign_in/github_sign_in.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+
+import 'package:provider/provider.dart';
+
+import 'domain/bloc/main_bloc.dart';
 
 class ShoppingListApp extends StatefulWidget {
   const ShoppingListApp({super.key});
@@ -20,54 +25,83 @@ class _ShoppingListAppState extends State<ShoppingListApp> {
   final String clientId = '1675fba8e1af87778abb';
   final String clientSecret = '08e782d29b72ea3996839e9219d6b5b49bd0c43e';
 
+  late final MainBloc _mainBloc;
+
+  bool buyFilter = true;
+  bool sortFilter = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _mainBloc = BlocFactory.instance.get<MainBloc>();
+    initBloc();
+  }
+
+  void initBloc() {//Ожидаем пока прогрузиться основной поток связаный с основной базой
+    _mainBloc.addEvent(MainBlocEvent.init(buyFilter: buyFilter, sortFilter: sortFilter));
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _mainBloc.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Firebase Shopping List',
-        theme: ThemeData(
+    return MultiProvider(
+      providers: [
+        Provider<MainBloc>(
+            create: (_) =>
+            _mainBloc),
+      ],
+      child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'Firebase Shopping List',
+          theme: ThemeData(
 
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-          useMaterial3: true,
-        ),
-        home: StreamBuilder<User?>(
-          stream: FirebaseAuth.instance.userChanges(),
-          builder: (context, snapshot) {
-            if(!snapshot.hasData){
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SizedBox(
-                    child: Center(
-                      child: ElevatedButton(onPressed: singIn,
-                        child: const Text('login with Google'),
+            colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+            useMaterial3: true,
+          ),
+          home: StreamBuilder<User?>(
+            stream: FirebaseAuth.instance.userChanges(),
+            builder: (context, snapshot) {
+              if(!snapshot.hasData){
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      child: Center(
+                        child: ElevatedButton(onPressed: singIn,
+                          child: const Text('login with Google'),
+                        ),
                       ),
                     ),
-                  ),
-                  SizedBox(
-                    child: Center(
-                      child: ElevatedButton(onPressed: ()=> singInGitHub(context),
-                        child: const Text('login with GitHub'),
+                    SizedBox(
+                      child: Center(
+                        child: ElevatedButton(onPressed: ()=> singInGitHub(context),
+                          child: const Text('login with GitHub'),
+                        ),
                       ),
                     ),
-                  ),
-                  SizedBox(
-                    child: Center(
-                      child: ElevatedButton(onPressed: singInAnonymously,
-                        child: const Text('login with Anonymously'),
+                    SizedBox(
+                      child: Center(
+                        child: ElevatedButton(onPressed: singInAnonymously,
+                          child: const Text('login with Anonymously'),
+                        ),
                       ),
                     ),
-                  ),
-                ],
-              );
-            } else {
+                  ],
+                );
+              } else {
 
-              return const MainPage(title: 'Firebase Shopping List');
-            }
+                return const MainPage(title: 'Firebase Shopping List');
+              }
 
-          },
-        )
+            },
+          )
+      ),
     );
   }
 

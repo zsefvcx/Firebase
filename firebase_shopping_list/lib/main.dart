@@ -2,15 +2,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_shopping_list/domain/domain.dart';
 import 'package:firebase_shopping_list/shopping_list_app.dart';
 import 'package:flutter/foundation.dart';
 
 import 'package:flutter/material.dart';
 
+import 'domain/bloc/bloc_factory.dart';
 import 'firebase_options.dart';
-
-
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,7 +29,7 @@ Future<void> main() async {
     }
   }
 
-  PurchasesList.init();
+  BlocFactory.instance.initialize();
 
   runApp(const ShoppingListApp());
 }

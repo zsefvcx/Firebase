@@ -1,10 +1,11 @@
 import 'dart:developer' as developer;
 
 import 'package:firebase_shopping_list/core/core.dart';
-import 'package:firebase_shopping_list/domain/domain.dart';
+import 'package:firebase_shopping_list/domain/bloc/main_bloc.dart';
 import 'package:firebase_shopping_list/presentation/widget/widget.dart';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 Future<void> showCustomDialog(List<bool> vis, Purchase dt, BuildContext context, String id) async {
   switch (await showDialog<(StatusOfAddingPurchases, Purchase)>(
@@ -20,7 +21,7 @@ Future<void> showCustomDialog(List<bool> vis, Purchase dt, BuildContext context,
   })) {
     case (StatusOfAddingPurchases.add, Purchase data):
       developer.log('${StatusOfAddingPurchases.add}');
-      PurchasesList.add(data);
+      context.read<MainBloc>().addEvent(MainBlocEvent.add(data: data));
       break;
     case ((StatusOfAddingPurchases.brk, _) ||
           (StatusOfAddingPurchases.def, _)):
@@ -28,11 +29,11 @@ Future<void> showCustomDialog(List<bool> vis, Purchase dt, BuildContext context,
       break;
     case (StatusOfAddingPurchases.rem, Purchase data):
       developer.log('${StatusOfAddingPurchases.rem}');
-      PurchasesList.rem(id, data.group);
+      context.read<MainBloc>().addEvent(MainBlocEvent.rem(id: id, grp: data.group));
       break;
     case (StatusOfAddingPurchases.mod, Purchase data):
       developer.log('${StatusOfAddingPurchases.mod}');
-      PurchasesList.mod(id, data);
+      context.read<MainBloc>().addEvent(MainBlocEvent.mod(id: id, data: data));
       break;
     case null:
       developer.log('null');

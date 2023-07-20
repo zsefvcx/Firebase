@@ -21,6 +21,7 @@ class ShoppingListRepositoryImpl extends ShoppingListRepository {
   @override
   void dispose() {
     shoppingListRemoteDataSource.dispose();
+    shoppingListLocalDataSource.dispose();
   }
 
   @override
@@ -57,8 +58,8 @@ class ShoppingListRepositoryImpl extends ShoppingListRepository {
   }
 
   @override
-  Stream<List<PurchasesListEntities>> getAll({required bool sortFilter, required bool buyFilter}) {
-    return shoppingListRemoteDataSource.getAll(sortFilter: sortFilter, buyFilter: buyFilter);
+  Future<List<PurchasesListEntities>> getAll({required bool sortFilter, required bool buyFilter}) async {
+    return await shoppingListRemoteDataSource.getAll(sortFilter: sortFilter, buyFilter: buyFilter);
   }
 
   @override
