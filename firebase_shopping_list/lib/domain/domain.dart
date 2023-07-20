@@ -1,1 +1,1 @@
-export 'entities/purchases_list.dart';
+export 'repositories/purchases_list.dart';

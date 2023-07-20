@@ -41,7 +41,27 @@ class _MyHomePageState extends State<MyHomePage> {
       true,
       false,
     ];
-    await showCustomDialog(vis, data, context, '');
+/*https://stackoverflow.com/questions/72893730/do-not-use-buildcontexts-across-async-gaps-flutter
+
+The problem is that after an await, every use of the BuildContext will show this
+warning. This warning happens because using a BuildContext after an await could
+happen after the widget is disposed of. This way, the context wouldn't exist
+anymore and the app could even crash because of this. Check out the official
+lint documentation(https://api.flutter.dev/flutter/widgets/State/mounted.html):
+Storing BuildContext for later usage can easily lead to difficult-to-diagnose
+crashes. Asynchronous gaps are implicitly storing BuildContext and are some of
+the easiest to overlook when writing code.
+The easy solution, from the official docs, is the need to check for
+State.mounted (https://api.flutter.dev/flutter/widgets/State/mounted.html).
+The code would look something like this on every place the warning shows up:
+      ...
+      } else {
+        if (mounted) Utils.flushBarErrorMessage("No Internet", context);
+      }
+      ...
+*/
+
+    if (mounted) await showCustomDialog(vis, data, context, '');
     developer.log(PurchasesList().toString());
   }
 

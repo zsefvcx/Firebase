@@ -1,3 +1,4 @@
+import 'dart:developer' as developer;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -16,8 +17,13 @@ import 'firebase_options.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-
+  //firebase --version
+  //firebase init
+  //firebase init emulators
+  //npm install -g firebase-tools
   //firebase emulators:start
+  //http://127.0.0.1:4000/
+
   if (kDebugMode) {
     try {
       FirebaseFirestore.instance.useFirestoreEmulator('localhost', 8080);
@@ -101,14 +107,14 @@ class _MyAppState extends State<MyApp> {
     try {
       //final userCredential =
       await FirebaseAuth.instance.signInAnonymously();
-      print("Signed in with temporary account.");
+      developer.log("Signed in with temporary account.");
     } on FirebaseAuthException catch (e) {
       switch (e.code) {
         case "operation-not-allowed":
-          print("Anonymous auth hasn't been enabled for this project.");
+          developer.log("Anonymous auth hasn't been enabled for this project.");
           break;
         default:
-          print("Unknown error.");
+          developer.log("Unknown error.");
       }
     }
 
@@ -141,7 +147,7 @@ class _MyAppState extends State<MyApp> {
       return await FirebaseAuth.instance.signInWithCredential(
           githubAuthCredential);
     } catch(e, s){
-      print('131:$s $e');
+      developer.log('131:$s $e');
       throw('$s $e');
     }
    }
@@ -158,7 +164,7 @@ class _MyAppState extends State<MyApp> {
 
   Future<UserCredential?> singInWithGoogle() async {
     final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-    print(googleUser?.email);
+    developer.log('${googleUser?.email}');
     if(googleUser != null){
       final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
 
