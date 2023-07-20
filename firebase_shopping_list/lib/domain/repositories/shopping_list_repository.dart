@@ -1,9 +1,7 @@
 
-import 'package:firebase_shopping_list/domain/entities/purchases.dart';
+import 'package:firebase_shopping_list/core/core.dart';
 
 abstract class ShoppingListRepository {
-
-  List<(String, Purchase)>? purchases;
 
   Future<void> mod(String id, Purchase data);
 

@@ -16,7 +16,7 @@ enum StatusOfAddingPurchases{
 }
 
 @freezed
-abstract class Purchase with _$Purchase{
+class Purchase with _$Purchase{
 
   const factory Purchase({
     required int id,

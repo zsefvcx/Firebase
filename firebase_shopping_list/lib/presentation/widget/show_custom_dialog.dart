@@ -1,5 +1,6 @@
 import 'dart:developer' as developer;
 
+import 'package:firebase_shopping_list/core/core.dart';
 import 'package:firebase_shopping_list/domain/domain.dart';
 import 'package:firebase_shopping_list/presentation/widget/widget.dart';
 

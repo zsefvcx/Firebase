@@ -1,1 +1,6 @@
 
+abstract class ShoppingListLocalDataSource {
+
+
+
+}

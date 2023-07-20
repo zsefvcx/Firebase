@@ -2,7 +2,7 @@
 
 // ignore_for_file: non_constant_identifier_names
 
-part of 'purchases.dart';
+part of '../../core/purchases.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator

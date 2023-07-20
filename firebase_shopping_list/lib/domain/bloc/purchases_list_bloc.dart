@@ -1,7 +1,7 @@
 import 'dart:developer' as developer;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_shopping_list/domain/entities/purchases.dart';
+import 'package:firebase_shopping_list/core/core.dart';
 
 
 //Проверка на наличие записи

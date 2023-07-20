@@ -1,5 +1,5 @@
 
-import 'package:firebase_shopping_list/domain/entities/purchases.dart';
+import 'package:firebase_shopping_list/core/purchases.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
