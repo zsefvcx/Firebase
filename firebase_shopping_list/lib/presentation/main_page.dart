@@ -11,16 +11,16 @@ import 'package:flutter/material.dart';
 
 import 'widget/widget.dart';
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+class MainPage extends StatefulWidget {
+  const MainPage({super.key, required this.title});
 
   final String title;
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<MainPage> createState() => _MainPageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MainPageState extends State<MainPage> {
   final storage = FirebaseStorage.instance;
 
 
@@ -127,7 +127,7 @@ The code would look something like this on every place the warning shows up:
           child: StreamBuilder<List<(String, Purchase)>>(
               stream:
               buyFilter?
-              PurchasesList.purchases0
+              PurchasesList.purchases
                   .where('bought', isEqualTo: false)
                   .orderBy('price', descending: sortFilter)
                   .snapshots()
@@ -136,7 +136,7 @@ The code would look something like this on every place the warning shows up:
                   return (e.id, e.data());
                 }).toList();
               })
-              :PurchasesList.purchases0
+              :PurchasesList.purchases
                   .orderBy('price', descending: sortFilter)
                   .snapshots()
                   .map((e) {

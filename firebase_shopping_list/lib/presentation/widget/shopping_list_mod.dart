@@ -1,7 +1,5 @@
 
-// ignore_for_file: unused_result
-
-import 'package:firebase_shopping_list/core/core.dart';
+import 'package:firebase_shopping_list/domain/entities/purchases.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -184,6 +182,7 @@ class _ShoppingListModWidgetState extends State<ShoppingListModWidget> {
                     onPressed: () { if(_validateForm()==true) {
                       _formKey.currentState?.save();
                       Navigator.pop(context, (StatusOfAddingPurchases.add,
+                      // ignore: unused_result
                       widget.data.copyWith(
                         name: null == name? widget.data.name : name!,
                         price: null == price? widget.data.price : price!,
@@ -203,6 +202,7 @@ class _ShoppingListModWidgetState extends State<ShoppingListModWidget> {
                     onPressed: () { if(_validateForm()==true) {
                       _formKey.currentState?.save();
                       Navigator.pop(context, (StatusOfAddingPurchases.mod,
+                      // ignore: unused_result
                       widget.data.copyWith(
                         name: null == name? widget.data.name : name!,
                         price: null == price? widget.data.price : price!,

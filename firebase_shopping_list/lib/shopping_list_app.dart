@@ -2,20 +2,20 @@
 import 'dart:developer' as developer;
 
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_shopping_list/presentation/my_home_page.dart';
+import 'package:firebase_shopping_list/presentation/main_page.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:github_sign_in/github_sign_in.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-class MyApp extends StatefulWidget {
-  const MyApp({super.key});
+class ShoppingListApp extends StatefulWidget {
+  const ShoppingListApp({super.key});
 
   @override
-  State<MyApp> createState() => _MyAppState();
+  State<ShoppingListApp> createState() => _ShoppingListAppState();
 }
 
-class _MyAppState extends State<MyApp> {
+class _ShoppingListAppState extends State<ShoppingListApp> {
 
   final String clientId = '1675fba8e1af87778abb';
   final String clientSecret = '08e782d29b72ea3996839e9219d6b5b49bd0c43e';
@@ -63,7 +63,7 @@ class _MyAppState extends State<MyApp> {
               );
             } else {
 
-              return const MyHomePage(title: 'Firebase Shopping List');
+              return const MainPage(title: 'Firebase Shopping List');
             }
 
           },

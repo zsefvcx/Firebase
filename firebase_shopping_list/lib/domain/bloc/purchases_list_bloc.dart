@@ -1,7 +1,8 @@
 import 'dart:developer' as developer;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_shopping_list/core/core.dart';
+import 'package:firebase_shopping_list/domain/entities/purchases.dart';
+
 
 //Проверка на наличие записи
 /*
@@ -25,17 +26,17 @@ await db.collection("users").get().then((event) {
 
 
 class PurchasesList {
-  static late final CollectionReference<Purchase> purchases0;
+  static late final CollectionReference<Purchase> purchases;
 
   static void init(){
-    purchases0 = FirebaseFirestore.instance.collection('Purchase').withConverter<Purchase>(
+    purchases = FirebaseFirestore.instance.collection('Purchase').withConverter<Purchase>(
       fromFirestore: (snapshot, _) => Purchase.fromJson(snapshot.data()!),
       toFirestore: (value, _) => value.toJson(),
     );
   }
 
   static Future<int> get length async {
-    var data = await purchases0.get()
+    var data = await purchases.get()
         .whenComplete(() => developer.log('Get length complete'))
         .onError((error, stackTrace) {
           developer.log('$stackTrace\n$error');
@@ -45,7 +46,7 @@ class PurchasesList {
   }
 
   static Future<Purchase?> get(String id) async {
-    var elem = await purchases0.doc(id).get().whenComplete(() => developer.log('Get Data with id:$id'))
+    var elem = await purchases.doc(id).get().whenComplete(() => developer.log('Get Data with id:$id'))
         .onError((error, stackTrace) {
       developer.log('$stackTrace\n$error');
       throw('$stackTrace\n$error');
@@ -54,7 +55,7 @@ class PurchasesList {
   }
 
   static Future<void> add(Purchase data) async {
-    await purchases0.add(data)
+    await purchases.add(data)
         .whenComplete(() => developer.log('add data:$data'))
         .onError((error, stackTrace) {
           developer.log('$stackTrace\n$error');
@@ -62,23 +63,23 @@ class PurchasesList {
         });
   }
 
-  static remAll() async {
-    var data = await purchases0.get();
+  static Future<void> remAll() async {
+    var data = await purchases.get();
     for(var elem in data.docs){
-      await purchases0.doc(elem.id).delete()
+      await purchases.doc(elem.id).delete()
           .whenComplete(() => developer.log('delete data with id:${elem.id}'))
           .onError((error, stackTrace) => developer.log('$stackTrace\n$error'));
     }
   }
 
   static Future<void> rem(String id, bool grp) async {
-    await purchases0.doc(id).delete()
+    await purchases.doc(id).delete()
         .whenComplete(() => developer.log('delete data with id:$id'))
         .onError((error, stackTrace) => developer.log('$stackTrace\n$error'));
   }
 
   static Future<void> mod(String id, Purchase data) async {
-    await purchases0.doc(id).set(data)
+    await purchases.doc(id).set(data)
         .whenComplete(() => developer.log('set data:$data with id:$id'))
         .onError((error, stackTrace) => developer.log('$stackTrace\n$error'));
   }
