@@ -1,10 +1,10 @@
 import 'dart:developer' as developer;
 
+import 'package:firebase_shopping_list/core/core.dart';
 import 'package:firebase_shopping_list/domain/domain.dart';
-import 'package:firebase_shopping_list/widget/widget.dart';
-import 'package:flutter/material.dart';
+import 'package:firebase_shopping_list/presentation/widget/widget.dart';
 
-import '../core/core.dart';
+import 'package:flutter/material.dart';
 
 Future<void> showCustomDialog(List<bool> vis, Purchase dt, BuildContext context, String id) async {
   switch (await showDialog<(StatusOfAddingPurchases, Purchase)>(
