@@ -4,8 +4,6 @@ import 'package:firebase_shopping_list/domain/domain.dart';
 class ShoppingListRepositoryImpl extends ShoppingListRepository {
 
 
-
-
   @override
   Future<void> add(Purchase data) {
     // TODO: implement add
@@ -25,7 +23,7 @@ class ShoppingListRepositoryImpl extends ShoppingListRepository {
 
   @override
   void init() {
-    // TODO: implement init
+    purchases = [];
   }
 
   @override
