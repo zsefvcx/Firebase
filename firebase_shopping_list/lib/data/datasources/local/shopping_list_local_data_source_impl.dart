@@ -7,4 +7,7 @@ class ShoppingListLocalDataSourceImpl extends ShoppingListLocalDataSource {
 
 
 
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }

@@ -36,13 +36,13 @@ class PurchasesList {
   }
 
   static Future<int> get length async {
-    var data = await purchases.get()
+    var data = await purchases.count().get()
         .whenComplete(() => developer.log('Get length complete'))
         .onError((error, stackTrace) {
-          developer.log('$stackTrace\n$error');
-          throw('$stackTrace\n$error');
-        });
-    return data.docs.length;
+      developer.log('$stackTrace\n$error');
+      throw('$stackTrace\n$error');
+    });
+    return data.count;
   }
 
   static Future<Purchase?> get(String id) async {
