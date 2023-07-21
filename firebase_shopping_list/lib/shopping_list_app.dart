@@ -27,18 +27,14 @@ class _ShoppingListAppState extends State<ShoppingListApp> {
 
   late final MainBloc _mainBloc;
 
-  bool buyFilter = true;
-  bool sortFilter = true;
-
   @override
   void initState() {
     super.initState();
     _mainBloc = BlocFactory.instance.get<MainBloc>();
-    initBloc();
   }
 
-  void initBloc() {//Ожидаем пока прогрузиться основной поток связаный с основной базой
-    _mainBloc.addEvent(MainBlocEvent.init(buyFilter: buyFilter, sortFilter: sortFilter));
+  void initBloc() {
+    _mainBloc.addEvent(const MainBlocEvent.init());
   }
 
   @override
@@ -95,7 +91,7 @@ class _ShoppingListAppState extends State<ShoppingListApp> {
                   ],
                 );
               } else {
-
+                initBloc();
                 return const MainPage(title: 'Firebase Shopping List');
               }
 

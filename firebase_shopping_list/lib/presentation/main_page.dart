@@ -1,5 +1,3 @@
-import 'dart:developer' as developer;
-import 'dart:ui';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -69,9 +67,6 @@ The code would look something like this on every place the warning shows up:
     if (mounted) await showCustomDialog(vis, data, context, '');
   }
 
-  bool buyFilter = true;
-  bool sortFilter = true;
-
   @override
   void initState() {
     super.initState();
@@ -79,6 +74,8 @@ The code would look something like this on every place the warning shows up:
 
   @override
   Widget build(BuildContext context) {
+    final ValueNotifier<bool> sortFilter = ValueNotifier<bool>(true);
+    final ValueNotifier<bool> buyFilter = ValueNotifier<bool>(true);
     return Scaffold(
       appBar: AppBar(
         actions: [
@@ -86,40 +83,54 @@ The code would look something like this on every place the warning shows up:
             padding: const EdgeInsets.all(8.0),
             child: FloatingActionButton(
               onPressed: (){
-                sortFilter = !sortFilter;
-                context.read<MainBloc>().addEvent(MainBlocEvent.getAll(sortFilter: sortFilter, buyFilter: buyFilter));
+                sortFilter.value = !sortFilter.value;
+                context.read<MainBloc>().addEvent(MainBlocEvent.getAll(sortFilter: sortFilter.value, buyFilter: buyFilter.value));
               },
               tooltip: 'Sort by price',
-              child: sortFilter?const Icon(MyFlutterApp.sort_amount_up):const Icon(MyFlutterApp.sort_amount_down),
+              child: ValueListenableBuilder<bool>(
+                  builder: (_, value, __) {
+                    return value?const Icon(MyFlutterApp.sort_amount_up):const Icon(MyFlutterApp.sort_amount_down);
+                  },
+                  valueListenable: sortFilter,
+              ),
             ),
           ),
           Row(
             children: [
               const Text('Hide Buy'),
-              Switch(
-                value: buyFilter,
-                activeColor: Colors.red,
-                onChanged: (bool value) async {
-                  if (buyFilter != value) {
-                    buyFilter = value;
-                    context.read<MainBloc>().addEvent(MainBlocEvent.getAll(sortFilter: sortFilter, buyFilter: buyFilter));
-                  }
+              ValueListenableBuilder<bool>(
+                builder: (_, value, __) {
+                  return Switch(
+                    value: buyFilter.value,
+                    activeColor: Colors.red,
+                    onChanged: (bool value) async {
+                      if (buyFilter.value != value) {
+                      buyFilter.value = value;
+                      context.read<MainBloc>().addEvent(MainBlocEvent.getAll(sortFilter: sortFilter.value, buyFilter: buyFilter.value));
+                      }
+                    },
+                  );
                 },
+                valueListenable: buyFilter,
               ),
+
             ],
           ),
         ],
         title: FutureBuilder<String>(
           future: storage.ref('img.jpg').getDownloadURL(),
-          builder: (context, snapshot) => snapshot.connectionState == ConnectionState.done?
-          CachedNetworkImage(
-            imageUrl: snapshot.data!,
-            progressIndicatorBuilder: (context, url, downloadProgress) =>
-                Center(child: CircularProgressIndicator(value: downloadProgress.progress)),
-            errorWidget: (context, url, error) => const Icon(Icons.error),
-            fit: BoxFit.fitHeight,
-          )
-              : const Center(child: CircularProgressIndicator())
+          builder: (context, snapshot) {
+            if(snapshot.connectionState == ConnectionState.done) {
+              return CachedNetworkImage(
+                imageUrl: snapshot.data!,
+                // progressIndicatorBuilder: (context, url, downloadProgress) =>
+                //     Center(child: CircularProgressIndicator(value: downloadProgress.progress)),
+                errorWidget: (context, url, error) => const Icon(Icons.error),
+                fit: BoxFit.fitHeight,
+              );
+            }
+              return const Center(child: CircularProgressIndicator());
+          }
           ,),
       ),
       body: SafeArea(
@@ -136,86 +147,34 @@ The code would look something like this on every place the warning shows up:
                         return const Center(child: CircularProgressIndicator());
                       },
                       error: (value) {
-                        throw UnimplementedError();
+                        return inErrorCenter('hasError', () {
+                          context.read<MainBloc>().addEvent(MainBlocEvent.getAll(sortFilter: sortFilter.value, buyFilter: buyFilter.value));
+                        });
                       },
                       timeOut: (value) {
-                        throw UnimplementedError();
+                        return inErrorCenter('hasTimeOut', () {
+                          context.read<MainBloc>().addEvent(MainBlocEvent.getAll(sortFilter: sortFilter.value, buyFilter: buyFilter.value));
+                        });
                       },
                       isBusy: (value) {
-                        throw UnimplementedError();
+                        return inErrorCenter('isBusy', () {
+                          context.read<MainBloc>().addEvent(MainBlocEvent.getAll(sortFilter: sortFilter.value, buyFilter: buyFilter.value));
+                        });
                       },
                       loaded: (value) {
-                        return const Placeholder();
+                        int length = value.data.length;
+                        return ListView.builder(
+                            itemCount: length,
+                            itemBuilder: (_, index) {
+                              PurchasesListEntities data  = value.data[index];
+                              return CustomCard(id: data.id, purchase: data.purchase);
+                            });
                       },
                     );
                   }
                 }
-                return const Placeholder();
+                return const Center(child: CircularProgressIndicator());
               }
-
-              // return StreamBuilder<List<PurchasesListEntities>>(
-              //   stream: context.read<MainBloc>().getAll(
-              //       sortFilter: sortFilter,
-              //       buyFilter: buyFilter
-              //   ),
-              //   builder: (_, snap) {
-              //     //final width = MediaQuery.of(context).size.width;
-              //     //print('FutureBuilder');
-              //     if (snap.connectionState == ConnectionState.waiting) {
-              //        return const Center(
-              //          child: CircularProgressIndicator(),
-              //        );
-              //     } else if (snap.connectionState  == ConnectionState.active) {
-              //       if (snap.hasData) {
-              //         bool status = true;//snap.data ?? false;
-              //         List<PurchasesListEntities> purchasesList = snap.data??[];
-              //         if (status) {
-              //           int length = purchasesList.length;
-              //           return ScrollConfiguration(
-              //             // + windows
-              //             behavior: ScrollConfiguration.of(context).copyWith(
-              //               dragDevices: {
-              //                 PointerDeviceKind.touch,
-              //                 PointerDeviceKind.mouse,
-              //               },
-              //             ),
-              //             child: Row(
-              //               children: [
-              //                 Expanded(
-              //                   child: ListView.builder(
-              //                       itemCount: length,
-              //                       itemBuilder: (_, index) {
-              //                         PurchasesListEntities data  = purchasesList[index];
-              //                         return CustomCard(id: data.id, purchase: data.purchase);
-              //                       }),
-              //                 ),
-              //               ],
-              //             ),
-              //           );
-              //         }
-              //       }
-              //        developer.log('${snap.connectionState}');
-              //        developer.log('${snap.data}');
-              //        return inErrorCenter('hasError', () {
-              //          setState(() {
-              //          });
-              //        });
-              //     } else if (snap.hasError) {
-              //       developer.log('${snap.connectionState}');
-              //       developer.log('${snap.data}');
-              //       return inErrorCenter('hasError', () {
-              //         setState(() {
-              //         });
-              //       });
-              //     } else {
-              //       developer.log('${snap.connectionState}');
-              //       developer.log('${snap.data}');
-              //       return inErrorCenter('No data', () {
-              //         setState(() {
-              //         });
-              //       });
-              //     }
-              //   }),
           ),
         ),
       ),

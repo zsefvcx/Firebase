@@ -87,9 +87,9 @@ class ShoppingListRemoteDataSourceImpl extends ShoppingListRemoteDataSource{
   }
 
   @override
-  Future<List<PurchasesListModel>> getAll({required bool sortFilter, required bool buyFilter}) async {
+  Stream<List<PurchasesListModel>> getAll({required bool sortFilter, required bool buyFilter}) {
     if (buyFilter){
-      return await purchases
+      return purchases
           .where('bought', isEqualTo: false)
           .orderBy('price', descending: sortFilter)
           .snapshots()
@@ -97,16 +97,16 @@ class ShoppingListRemoteDataSourceImpl extends ShoppingListRemoteDataSource{
         return e.docs.map((e) {
           return PurchasesListModel(id: e.id, purchase: e.data());
         }).toList();
-      }).listen((event) => event).asFuture();
+      });
     } else {
-      return await purchases
+      return purchases
           .orderBy('price', descending: sortFilter)
           .snapshots()
           .map((e) {
         return e.docs.map((e) {
           return PurchasesListModel(id: e.id, purchase: e.data());
         }).toList();
-      }).listen((event) => event).asFuture();
+      });
     }
   }
 

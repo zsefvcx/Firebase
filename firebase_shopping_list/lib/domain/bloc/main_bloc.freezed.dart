@@ -732,11 +732,9 @@ abstract class _isBusy implements MainBlocState {
 mixin _$MainBlocEvent {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(bool sortFilter, bool buyFilter) init,
+    required TResult Function() init,
     required TResult Function(bool sortFilter, bool buyFilter) getAll,
     required TResult Function(Purchase data) add,
-    required TResult Function(String id) get,
-    required TResult Function(String id) getLength,
     required TResult Function(String id, Purchase data) mod,
     required TResult Function(String id, bool grp) rem,
     required TResult Function() remAll,
@@ -744,11 +742,9 @@ mixin _$MainBlocEvent {
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(bool sortFilter, bool buyFilter)? init,
+    TResult? Function()? init,
     TResult? Function(bool sortFilter, bool buyFilter)? getAll,
     TResult? Function(Purchase data)? add,
-    TResult? Function(String id)? get,
-    TResult? Function(String id)? getLength,
     TResult? Function(String id, Purchase data)? mod,
     TResult? Function(String id, bool grp)? rem,
     TResult? Function()? remAll,
@@ -756,11 +752,9 @@ mixin _$MainBlocEvent {
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(bool sortFilter, bool buyFilter)? init,
+    TResult Function()? init,
     TResult Function(bool sortFilter, bool buyFilter)? getAll,
     TResult Function(Purchase data)? add,
-    TResult Function(String id)? get,
-    TResult Function(String id)? getLength,
     TResult Function(String id, Purchase data)? mod,
     TResult Function(String id, bool grp)? rem,
     TResult Function()? remAll,
@@ -772,8 +766,6 @@ mixin _$MainBlocEvent {
     required TResult Function(_initEvent value) init,
     required TResult Function(_getAllEvent value) getAll,
     required TResult Function(_addEvent value) add,
-    required TResult Function(_getEvent value) get,
-    required TResult Function(_getLengthEvent value) getLength,
     required TResult Function(_modEvent value) mod,
     required TResult Function(_remEvent value) rem,
     required TResult Function(_remAllEvent value) remAll,
@@ -784,8 +776,6 @@ mixin _$MainBlocEvent {
     TResult? Function(_initEvent value)? init,
     TResult? Function(_getAllEvent value)? getAll,
     TResult? Function(_addEvent value)? add,
-    TResult? Function(_getEvent value)? get,
-    TResult? Function(_getLengthEvent value)? getLength,
     TResult? Function(_modEvent value)? mod,
     TResult? Function(_remEvent value)? rem,
     TResult? Function(_remAllEvent value)? remAll,
@@ -796,8 +786,6 @@ mixin _$MainBlocEvent {
     TResult Function(_initEvent value)? init,
     TResult Function(_getAllEvent value)? getAll,
     TResult Function(_addEvent value)? add,
-    TResult Function(_getEvent value)? get,
-    TResult Function(_getLengthEvent value)? getLength,
     TResult Function(_modEvent value)? mod,
     TResult Function(_remEvent value)? rem,
     TResult Function(_remAllEvent value)? remAll,
@@ -829,8 +817,6 @@ abstract class _$$_initEventCopyWith<$Res> {
   factory _$$_initEventCopyWith(
           _$_initEvent value, $Res Function(_$_initEvent) then) =
       __$$_initEventCopyWithImpl<$Res>;
-  @useResult
-  $Res call({bool sortFilter, bool buyFilter});
 }
 
 /// @nodoc
@@ -840,106 +826,66 @@ class __$$_initEventCopyWithImpl<$Res>
   __$$_initEventCopyWithImpl(
       _$_initEvent _value, $Res Function(_$_initEvent) _then)
       : super(_value, _then);
-
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? sortFilter = null,
-    Object? buyFilter = null,
-  }) {
-    return _then(_$_initEvent(
-      sortFilter: null == sortFilter
-          ? _value.sortFilter
-          : sortFilter // ignore: cast_nullable_to_non_nullable
-              as bool,
-      buyFilter: null == buyFilter
-          ? _value.buyFilter
-          : buyFilter // ignore: cast_nullable_to_non_nullable
-              as bool,
-    ));
-  }
 }
 
 /// @nodoc
 
 class _$_initEvent implements _initEvent {
-  const _$_initEvent({required this.sortFilter, required this.buyFilter});
-
-  @override
-  final bool sortFilter;
-  @override
-  final bool buyFilter;
+  const _$_initEvent();
 
   @override
   String toString() {
-    return 'MainBlocEvent.init(sortFilter: $sortFilter, buyFilter: $buyFilter)';
+    return 'MainBlocEvent.init()';
   }
 
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$_initEvent &&
-            (identical(other.sortFilter, sortFilter) ||
-                other.sortFilter == sortFilter) &&
-            (identical(other.buyFilter, buyFilter) ||
-                other.buyFilter == buyFilter));
+        (other.runtimeType == runtimeType && other is _$_initEvent);
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, sortFilter, buyFilter);
-
-  @JsonKey(ignore: true)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$_initEventCopyWith<_$_initEvent> get copyWith =>
-      __$$_initEventCopyWithImpl<_$_initEvent>(this, _$identity);
+  int get hashCode => runtimeType.hashCode;
 
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(bool sortFilter, bool buyFilter) init,
+    required TResult Function() init,
     required TResult Function(bool sortFilter, bool buyFilter) getAll,
     required TResult Function(Purchase data) add,
-    required TResult Function(String id) get,
-    required TResult Function(String id) getLength,
     required TResult Function(String id, Purchase data) mod,
     required TResult Function(String id, bool grp) rem,
     required TResult Function() remAll,
   }) {
-    return init(sortFilter, buyFilter);
+    return init();
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(bool sortFilter, bool buyFilter)? init,
+    TResult? Function()? init,
     TResult? Function(bool sortFilter, bool buyFilter)? getAll,
     TResult? Function(Purchase data)? add,
-    TResult? Function(String id)? get,
-    TResult? Function(String id)? getLength,
     TResult? Function(String id, Purchase data)? mod,
     TResult? Function(String id, bool grp)? rem,
     TResult? Function()? remAll,
   }) {
-    return init?.call(sortFilter, buyFilter);
+    return init?.call();
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(bool sortFilter, bool buyFilter)? init,
+    TResult Function()? init,
     TResult Function(bool sortFilter, bool buyFilter)? getAll,
     TResult Function(Purchase data)? add,
-    TResult Function(String id)? get,
-    TResult Function(String id)? getLength,
     TResult Function(String id, Purchase data)? mod,
     TResult Function(String id, bool grp)? rem,
     TResult Function()? remAll,
     required TResult orElse(),
   }) {
     if (init != null) {
-      return init(sortFilter, buyFilter);
+      return init();
     }
     return orElse();
   }
@@ -950,8 +896,6 @@ class _$_initEvent implements _initEvent {
     required TResult Function(_initEvent value) init,
     required TResult Function(_getAllEvent value) getAll,
     required TResult Function(_addEvent value) add,
-    required TResult Function(_getEvent value) get,
-    required TResult Function(_getLengthEvent value) getLength,
     required TResult Function(_modEvent value) mod,
     required TResult Function(_remEvent value) rem,
     required TResult Function(_remAllEvent value) remAll,
@@ -965,8 +909,6 @@ class _$_initEvent implements _initEvent {
     TResult? Function(_initEvent value)? init,
     TResult? Function(_getAllEvent value)? getAll,
     TResult? Function(_addEvent value)? add,
-    TResult? Function(_getEvent value)? get,
-    TResult? Function(_getLengthEvent value)? getLength,
     TResult? Function(_modEvent value)? mod,
     TResult? Function(_remEvent value)? rem,
     TResult? Function(_remAllEvent value)? remAll,
@@ -980,8 +922,6 @@ class _$_initEvent implements _initEvent {
     TResult Function(_initEvent value)? init,
     TResult Function(_getAllEvent value)? getAll,
     TResult Function(_addEvent value)? add,
-    TResult Function(_getEvent value)? get,
-    TResult Function(_getLengthEvent value)? getLength,
     TResult Function(_modEvent value)? mod,
     TResult Function(_remEvent value)? rem,
     TResult Function(_remAllEvent value)? remAll,
@@ -995,15 +935,7 @@ class _$_initEvent implements _initEvent {
 }
 
 abstract class _initEvent implements MainBlocEvent {
-  const factory _initEvent(
-      {required final bool sortFilter,
-      required final bool buyFilter}) = _$_initEvent;
-
-  bool get sortFilter;
-  bool get buyFilter;
-  @JsonKey(ignore: true)
-  _$$_initEventCopyWith<_$_initEvent> get copyWith =>
-      throw _privateConstructorUsedError;
+  const factory _initEvent() = _$_initEvent;
 }
 
 /// @nodoc
@@ -1080,11 +1012,9 @@ class _$_getAllEvent implements _getAllEvent {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(bool sortFilter, bool buyFilter) init,
+    required TResult Function() init,
     required TResult Function(bool sortFilter, bool buyFilter) getAll,
     required TResult Function(Purchase data) add,
-    required TResult Function(String id) get,
-    required TResult Function(String id) getLength,
     required TResult Function(String id, Purchase data) mod,
     required TResult Function(String id, bool grp) rem,
     required TResult Function() remAll,
@@ -1095,11 +1025,9 @@ class _$_getAllEvent implements _getAllEvent {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(bool sortFilter, bool buyFilter)? init,
+    TResult? Function()? init,
     TResult? Function(bool sortFilter, bool buyFilter)? getAll,
     TResult? Function(Purchase data)? add,
-    TResult? Function(String id)? get,
-    TResult? Function(String id)? getLength,
     TResult? Function(String id, Purchase data)? mod,
     TResult? Function(String id, bool grp)? rem,
     TResult? Function()? remAll,
@@ -1110,11 +1038,9 @@ class _$_getAllEvent implements _getAllEvent {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(bool sortFilter, bool buyFilter)? init,
+    TResult Function()? init,
     TResult Function(bool sortFilter, bool buyFilter)? getAll,
     TResult Function(Purchase data)? add,
-    TResult Function(String id)? get,
-    TResult Function(String id)? getLength,
     TResult Function(String id, Purchase data)? mod,
     TResult Function(String id, bool grp)? rem,
     TResult Function()? remAll,
@@ -1132,8 +1058,6 @@ class _$_getAllEvent implements _getAllEvent {
     required TResult Function(_initEvent value) init,
     required TResult Function(_getAllEvent value) getAll,
     required TResult Function(_addEvent value) add,
-    required TResult Function(_getEvent value) get,
-    required TResult Function(_getLengthEvent value) getLength,
     required TResult Function(_modEvent value) mod,
     required TResult Function(_remEvent value) rem,
     required TResult Function(_remAllEvent value) remAll,
@@ -1147,8 +1071,6 @@ class _$_getAllEvent implements _getAllEvent {
     TResult? Function(_initEvent value)? init,
     TResult? Function(_getAllEvent value)? getAll,
     TResult? Function(_addEvent value)? add,
-    TResult? Function(_getEvent value)? get,
-    TResult? Function(_getLengthEvent value)? getLength,
     TResult? Function(_modEvent value)? mod,
     TResult? Function(_remEvent value)? rem,
     TResult? Function(_remAllEvent value)? remAll,
@@ -1162,8 +1084,6 @@ class _$_getAllEvent implements _getAllEvent {
     TResult Function(_initEvent value)? init,
     TResult Function(_getAllEvent value)? getAll,
     TResult Function(_addEvent value)? add,
-    TResult Function(_getEvent value)? get,
-    TResult Function(_getLengthEvent value)? getLength,
     TResult Function(_modEvent value)? mod,
     TResult Function(_remEvent value)? rem,
     TResult Function(_remAllEvent value)? remAll,
@@ -1262,11 +1182,9 @@ class _$_addEvent implements _addEvent {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(bool sortFilter, bool buyFilter) init,
+    required TResult Function() init,
     required TResult Function(bool sortFilter, bool buyFilter) getAll,
     required TResult Function(Purchase data) add,
-    required TResult Function(String id) get,
-    required TResult Function(String id) getLength,
     required TResult Function(String id, Purchase data) mod,
     required TResult Function(String id, bool grp) rem,
     required TResult Function() remAll,
@@ -1277,11 +1195,9 @@ class _$_addEvent implements _addEvent {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(bool sortFilter, bool buyFilter)? init,
+    TResult? Function()? init,
     TResult? Function(bool sortFilter, bool buyFilter)? getAll,
     TResult? Function(Purchase data)? add,
-    TResult? Function(String id)? get,
-    TResult? Function(String id)? getLength,
     TResult? Function(String id, Purchase data)? mod,
     TResult? Function(String id, bool grp)? rem,
     TResult? Function()? remAll,
@@ -1292,11 +1208,9 @@ class _$_addEvent implements _addEvent {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(bool sortFilter, bool buyFilter)? init,
+    TResult Function()? init,
     TResult Function(bool sortFilter, bool buyFilter)? getAll,
     TResult Function(Purchase data)? add,
-    TResult Function(String id)? get,
-    TResult Function(String id)? getLength,
     TResult Function(String id, Purchase data)? mod,
     TResult Function(String id, bool grp)? rem,
     TResult Function()? remAll,
@@ -1314,8 +1228,6 @@ class _$_addEvent implements _addEvent {
     required TResult Function(_initEvent value) init,
     required TResult Function(_getAllEvent value) getAll,
     required TResult Function(_addEvent value) add,
-    required TResult Function(_getEvent value) get,
-    required TResult Function(_getLengthEvent value) getLength,
     required TResult Function(_modEvent value) mod,
     required TResult Function(_remEvent value) rem,
     required TResult Function(_remAllEvent value) remAll,
@@ -1329,8 +1241,6 @@ class _$_addEvent implements _addEvent {
     TResult? Function(_initEvent value)? init,
     TResult? Function(_getAllEvent value)? getAll,
     TResult? Function(_addEvent value)? add,
-    TResult? Function(_getEvent value)? get,
-    TResult? Function(_getLengthEvent value)? getLength,
     TResult? Function(_modEvent value)? mod,
     TResult? Function(_remEvent value)? rem,
     TResult? Function(_remAllEvent value)? remAll,
@@ -1344,8 +1254,6 @@ class _$_addEvent implements _addEvent {
     TResult Function(_initEvent value)? init,
     TResult Function(_getAllEvent value)? getAll,
     TResult Function(_addEvent value)? add,
-    TResult Function(_getEvent value)? get,
-    TResult Function(_getLengthEvent value)? getLength,
     TResult Function(_modEvent value)? mod,
     TResult Function(_remEvent value)? rem,
     TResult Function(_remAllEvent value)? remAll,
@@ -1364,344 +1272,6 @@ abstract class _addEvent implements MainBlocEvent {
   Purchase get data;
   @JsonKey(ignore: true)
   _$$_addEventCopyWith<_$_addEvent> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class _$$_getEventCopyWith<$Res> {
-  factory _$$_getEventCopyWith(
-          _$_getEvent value, $Res Function(_$_getEvent) then) =
-      __$$_getEventCopyWithImpl<$Res>;
-  @useResult
-  $Res call({String id});
-}
-
-/// @nodoc
-class __$$_getEventCopyWithImpl<$Res>
-    extends _$MainBlocEventCopyWithImpl<$Res, _$_getEvent>
-    implements _$$_getEventCopyWith<$Res> {
-  __$$_getEventCopyWithImpl(
-      _$_getEvent _value, $Res Function(_$_getEvent) _then)
-      : super(_value, _then);
-
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? id = null,
-  }) {
-    return _then(_$_getEvent(
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as String,
-    ));
-  }
-}
-
-/// @nodoc
-
-class _$_getEvent implements _getEvent {
-  const _$_getEvent({required this.id});
-
-  @override
-  final String id;
-
-  @override
-  String toString() {
-    return 'MainBlocEvent.get(id: $id)';
-  }
-
-  @override
-  bool operator ==(dynamic other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$_getEvent &&
-            (identical(other.id, id) || other.id == id));
-  }
-
-  @override
-  int get hashCode => Object.hash(runtimeType, id);
-
-  @JsonKey(ignore: true)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$_getEventCopyWith<_$_getEvent> get copyWith =>
-      __$$_getEventCopyWithImpl<_$_getEvent>(this, _$identity);
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function(bool sortFilter, bool buyFilter) init,
-    required TResult Function(bool sortFilter, bool buyFilter) getAll,
-    required TResult Function(Purchase data) add,
-    required TResult Function(String id) get,
-    required TResult Function(String id) getLength,
-    required TResult Function(String id, Purchase data) mod,
-    required TResult Function(String id, bool grp) rem,
-    required TResult Function() remAll,
-  }) {
-    return get(id);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(bool sortFilter, bool buyFilter)? init,
-    TResult? Function(bool sortFilter, bool buyFilter)? getAll,
-    TResult? Function(Purchase data)? add,
-    TResult? Function(String id)? get,
-    TResult? Function(String id)? getLength,
-    TResult? Function(String id, Purchase data)? mod,
-    TResult? Function(String id, bool grp)? rem,
-    TResult? Function()? remAll,
-  }) {
-    return get?.call(id);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function(bool sortFilter, bool buyFilter)? init,
-    TResult Function(bool sortFilter, bool buyFilter)? getAll,
-    TResult Function(Purchase data)? add,
-    TResult Function(String id)? get,
-    TResult Function(String id)? getLength,
-    TResult Function(String id, Purchase data)? mod,
-    TResult Function(String id, bool grp)? rem,
-    TResult Function()? remAll,
-    required TResult orElse(),
-  }) {
-    if (get != null) {
-      return get(id);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(_initEvent value) init,
-    required TResult Function(_getAllEvent value) getAll,
-    required TResult Function(_addEvent value) add,
-    required TResult Function(_getEvent value) get,
-    required TResult Function(_getLengthEvent value) getLength,
-    required TResult Function(_modEvent value) mod,
-    required TResult Function(_remEvent value) rem,
-    required TResult Function(_remAllEvent value) remAll,
-  }) {
-    return get(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_initEvent value)? init,
-    TResult? Function(_getAllEvent value)? getAll,
-    TResult? Function(_addEvent value)? add,
-    TResult? Function(_getEvent value)? get,
-    TResult? Function(_getLengthEvent value)? getLength,
-    TResult? Function(_modEvent value)? mod,
-    TResult? Function(_remEvent value)? rem,
-    TResult? Function(_remAllEvent value)? remAll,
-  }) {
-    return get?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(_initEvent value)? init,
-    TResult Function(_getAllEvent value)? getAll,
-    TResult Function(_addEvent value)? add,
-    TResult Function(_getEvent value)? get,
-    TResult Function(_getLengthEvent value)? getLength,
-    TResult Function(_modEvent value)? mod,
-    TResult Function(_remEvent value)? rem,
-    TResult Function(_remAllEvent value)? remAll,
-    required TResult orElse(),
-  }) {
-    if (get != null) {
-      return get(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class _getEvent implements MainBlocEvent {
-  const factory _getEvent({required final String id}) = _$_getEvent;
-
-  String get id;
-  @JsonKey(ignore: true)
-  _$$_getEventCopyWith<_$_getEvent> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class _$$_getLengthEventCopyWith<$Res> {
-  factory _$$_getLengthEventCopyWith(
-          _$_getLengthEvent value, $Res Function(_$_getLengthEvent) then) =
-      __$$_getLengthEventCopyWithImpl<$Res>;
-  @useResult
-  $Res call({String id});
-}
-
-/// @nodoc
-class __$$_getLengthEventCopyWithImpl<$Res>
-    extends _$MainBlocEventCopyWithImpl<$Res, _$_getLengthEvent>
-    implements _$$_getLengthEventCopyWith<$Res> {
-  __$$_getLengthEventCopyWithImpl(
-      _$_getLengthEvent _value, $Res Function(_$_getLengthEvent) _then)
-      : super(_value, _then);
-
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? id = null,
-  }) {
-    return _then(_$_getLengthEvent(
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as String,
-    ));
-  }
-}
-
-/// @nodoc
-
-class _$_getLengthEvent implements _getLengthEvent {
-  const _$_getLengthEvent({required this.id});
-
-  @override
-  final String id;
-
-  @override
-  String toString() {
-    return 'MainBlocEvent.getLength(id: $id)';
-  }
-
-  @override
-  bool operator ==(dynamic other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$_getLengthEvent &&
-            (identical(other.id, id) || other.id == id));
-  }
-
-  @override
-  int get hashCode => Object.hash(runtimeType, id);
-
-  @JsonKey(ignore: true)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$_getLengthEventCopyWith<_$_getLengthEvent> get copyWith =>
-      __$$_getLengthEventCopyWithImpl<_$_getLengthEvent>(this, _$identity);
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function(bool sortFilter, bool buyFilter) init,
-    required TResult Function(bool sortFilter, bool buyFilter) getAll,
-    required TResult Function(Purchase data) add,
-    required TResult Function(String id) get,
-    required TResult Function(String id) getLength,
-    required TResult Function(String id, Purchase data) mod,
-    required TResult Function(String id, bool grp) rem,
-    required TResult Function() remAll,
-  }) {
-    return getLength(id);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(bool sortFilter, bool buyFilter)? init,
-    TResult? Function(bool sortFilter, bool buyFilter)? getAll,
-    TResult? Function(Purchase data)? add,
-    TResult? Function(String id)? get,
-    TResult? Function(String id)? getLength,
-    TResult? Function(String id, Purchase data)? mod,
-    TResult? Function(String id, bool grp)? rem,
-    TResult? Function()? remAll,
-  }) {
-    return getLength?.call(id);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function(bool sortFilter, bool buyFilter)? init,
-    TResult Function(bool sortFilter, bool buyFilter)? getAll,
-    TResult Function(Purchase data)? add,
-    TResult Function(String id)? get,
-    TResult Function(String id)? getLength,
-    TResult Function(String id, Purchase data)? mod,
-    TResult Function(String id, bool grp)? rem,
-    TResult Function()? remAll,
-    required TResult orElse(),
-  }) {
-    if (getLength != null) {
-      return getLength(id);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(_initEvent value) init,
-    required TResult Function(_getAllEvent value) getAll,
-    required TResult Function(_addEvent value) add,
-    required TResult Function(_getEvent value) get,
-    required TResult Function(_getLengthEvent value) getLength,
-    required TResult Function(_modEvent value) mod,
-    required TResult Function(_remEvent value) rem,
-    required TResult Function(_remAllEvent value) remAll,
-  }) {
-    return getLength(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_initEvent value)? init,
-    TResult? Function(_getAllEvent value)? getAll,
-    TResult? Function(_addEvent value)? add,
-    TResult? Function(_getEvent value)? get,
-    TResult? Function(_getLengthEvent value)? getLength,
-    TResult? Function(_modEvent value)? mod,
-    TResult? Function(_remEvent value)? rem,
-    TResult? Function(_remAllEvent value)? remAll,
-  }) {
-    return getLength?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(_initEvent value)? init,
-    TResult Function(_getAllEvent value)? getAll,
-    TResult Function(_addEvent value)? add,
-    TResult Function(_getEvent value)? get,
-    TResult Function(_getLengthEvent value)? getLength,
-    TResult Function(_modEvent value)? mod,
-    TResult Function(_remEvent value)? rem,
-    TResult Function(_remAllEvent value)? remAll,
-    required TResult orElse(),
-  }) {
-    if (getLength != null) {
-      return getLength(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class _getLengthEvent implements MainBlocEvent {
-  const factory _getLengthEvent({required final String id}) = _$_getLengthEvent;
-
-  String get id;
-  @JsonKey(ignore: true)
-  _$$_getLengthEventCopyWith<_$_getLengthEvent> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
@@ -1787,11 +1357,9 @@ class _$_modEvent implements _modEvent {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(bool sortFilter, bool buyFilter) init,
+    required TResult Function() init,
     required TResult Function(bool sortFilter, bool buyFilter) getAll,
     required TResult Function(Purchase data) add,
-    required TResult Function(String id) get,
-    required TResult Function(String id) getLength,
     required TResult Function(String id, Purchase data) mod,
     required TResult Function(String id, bool grp) rem,
     required TResult Function() remAll,
@@ -1802,11 +1370,9 @@ class _$_modEvent implements _modEvent {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(bool sortFilter, bool buyFilter)? init,
+    TResult? Function()? init,
     TResult? Function(bool sortFilter, bool buyFilter)? getAll,
     TResult? Function(Purchase data)? add,
-    TResult? Function(String id)? get,
-    TResult? Function(String id)? getLength,
     TResult? Function(String id, Purchase data)? mod,
     TResult? Function(String id, bool grp)? rem,
     TResult? Function()? remAll,
@@ -1817,11 +1383,9 @@ class _$_modEvent implements _modEvent {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(bool sortFilter, bool buyFilter)? init,
+    TResult Function()? init,
     TResult Function(bool sortFilter, bool buyFilter)? getAll,
     TResult Function(Purchase data)? add,
-    TResult Function(String id)? get,
-    TResult Function(String id)? getLength,
     TResult Function(String id, Purchase data)? mod,
     TResult Function(String id, bool grp)? rem,
     TResult Function()? remAll,
@@ -1839,8 +1403,6 @@ class _$_modEvent implements _modEvent {
     required TResult Function(_initEvent value) init,
     required TResult Function(_getAllEvent value) getAll,
     required TResult Function(_addEvent value) add,
-    required TResult Function(_getEvent value) get,
-    required TResult Function(_getLengthEvent value) getLength,
     required TResult Function(_modEvent value) mod,
     required TResult Function(_remEvent value) rem,
     required TResult Function(_remAllEvent value) remAll,
@@ -1854,8 +1416,6 @@ class _$_modEvent implements _modEvent {
     TResult? Function(_initEvent value)? init,
     TResult? Function(_getAllEvent value)? getAll,
     TResult? Function(_addEvent value)? add,
-    TResult? Function(_getEvent value)? get,
-    TResult? Function(_getLengthEvent value)? getLength,
     TResult? Function(_modEvent value)? mod,
     TResult? Function(_remEvent value)? rem,
     TResult? Function(_remAllEvent value)? remAll,
@@ -1869,8 +1429,6 @@ class _$_modEvent implements _modEvent {
     TResult Function(_initEvent value)? init,
     TResult Function(_getAllEvent value)? getAll,
     TResult Function(_addEvent value)? add,
-    TResult Function(_getEvent value)? get,
-    TResult Function(_getLengthEvent value)? getLength,
     TResult Function(_modEvent value)? mod,
     TResult Function(_remEvent value)? rem,
     TResult Function(_remAllEvent value)? remAll,
@@ -1966,11 +1524,9 @@ class _$_remEvent implements _remEvent {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(bool sortFilter, bool buyFilter) init,
+    required TResult Function() init,
     required TResult Function(bool sortFilter, bool buyFilter) getAll,
     required TResult Function(Purchase data) add,
-    required TResult Function(String id) get,
-    required TResult Function(String id) getLength,
     required TResult Function(String id, Purchase data) mod,
     required TResult Function(String id, bool grp) rem,
     required TResult Function() remAll,
@@ -1981,11 +1537,9 @@ class _$_remEvent implements _remEvent {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(bool sortFilter, bool buyFilter)? init,
+    TResult? Function()? init,
     TResult? Function(bool sortFilter, bool buyFilter)? getAll,
     TResult? Function(Purchase data)? add,
-    TResult? Function(String id)? get,
-    TResult? Function(String id)? getLength,
     TResult? Function(String id, Purchase data)? mod,
     TResult? Function(String id, bool grp)? rem,
     TResult? Function()? remAll,
@@ -1996,11 +1550,9 @@ class _$_remEvent implements _remEvent {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(bool sortFilter, bool buyFilter)? init,
+    TResult Function()? init,
     TResult Function(bool sortFilter, bool buyFilter)? getAll,
     TResult Function(Purchase data)? add,
-    TResult Function(String id)? get,
-    TResult Function(String id)? getLength,
     TResult Function(String id, Purchase data)? mod,
     TResult Function(String id, bool grp)? rem,
     TResult Function()? remAll,
@@ -2018,8 +1570,6 @@ class _$_remEvent implements _remEvent {
     required TResult Function(_initEvent value) init,
     required TResult Function(_getAllEvent value) getAll,
     required TResult Function(_addEvent value) add,
-    required TResult Function(_getEvent value) get,
-    required TResult Function(_getLengthEvent value) getLength,
     required TResult Function(_modEvent value) mod,
     required TResult Function(_remEvent value) rem,
     required TResult Function(_remAllEvent value) remAll,
@@ -2033,8 +1583,6 @@ class _$_remEvent implements _remEvent {
     TResult? Function(_initEvent value)? init,
     TResult? Function(_getAllEvent value)? getAll,
     TResult? Function(_addEvent value)? add,
-    TResult? Function(_getEvent value)? get,
-    TResult? Function(_getLengthEvent value)? getLength,
     TResult? Function(_modEvent value)? mod,
     TResult? Function(_remEvent value)? rem,
     TResult? Function(_remAllEvent value)? remAll,
@@ -2048,8 +1596,6 @@ class _$_remEvent implements _remEvent {
     TResult Function(_initEvent value)? init,
     TResult Function(_getAllEvent value)? getAll,
     TResult Function(_addEvent value)? add,
-    TResult Function(_getEvent value)? get,
-    TResult Function(_getLengthEvent value)? getLength,
     TResult Function(_modEvent value)? mod,
     TResult Function(_remEvent value)? rem,
     TResult Function(_remAllEvent value)? remAll,
@@ -2111,11 +1657,9 @@ class _$_remAllEvent implements _remAllEvent {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(bool sortFilter, bool buyFilter) init,
+    required TResult Function() init,
     required TResult Function(bool sortFilter, bool buyFilter) getAll,
     required TResult Function(Purchase data) add,
-    required TResult Function(String id) get,
-    required TResult Function(String id) getLength,
     required TResult Function(String id, Purchase data) mod,
     required TResult Function(String id, bool grp) rem,
     required TResult Function() remAll,
@@ -2126,11 +1670,9 @@ class _$_remAllEvent implements _remAllEvent {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(bool sortFilter, bool buyFilter)? init,
+    TResult? Function()? init,
     TResult? Function(bool sortFilter, bool buyFilter)? getAll,
     TResult? Function(Purchase data)? add,
-    TResult? Function(String id)? get,
-    TResult? Function(String id)? getLength,
     TResult? Function(String id, Purchase data)? mod,
     TResult? Function(String id, bool grp)? rem,
     TResult? Function()? remAll,
@@ -2141,11 +1683,9 @@ class _$_remAllEvent implements _remAllEvent {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(bool sortFilter, bool buyFilter)? init,
+    TResult Function()? init,
     TResult Function(bool sortFilter, bool buyFilter)? getAll,
     TResult Function(Purchase data)? add,
-    TResult Function(String id)? get,
-    TResult Function(String id)? getLength,
     TResult Function(String id, Purchase data)? mod,
     TResult Function(String id, bool grp)? rem,
     TResult Function()? remAll,
@@ -2163,8 +1703,6 @@ class _$_remAllEvent implements _remAllEvent {
     required TResult Function(_initEvent value) init,
     required TResult Function(_getAllEvent value) getAll,
     required TResult Function(_addEvent value) add,
-    required TResult Function(_getEvent value) get,
-    required TResult Function(_getLengthEvent value) getLength,
     required TResult Function(_modEvent value) mod,
     required TResult Function(_remEvent value) rem,
     required TResult Function(_remAllEvent value) remAll,
@@ -2178,8 +1716,6 @@ class _$_remAllEvent implements _remAllEvent {
     TResult? Function(_initEvent value)? init,
     TResult? Function(_getAllEvent value)? getAll,
     TResult? Function(_addEvent value)? add,
-    TResult? Function(_getEvent value)? get,
-    TResult? Function(_getLengthEvent value)? getLength,
     TResult? Function(_modEvent value)? mod,
     TResult? Function(_remEvent value)? rem,
     TResult? Function(_remAllEvent value)? remAll,
@@ -2193,8 +1729,6 @@ class _$_remAllEvent implements _remAllEvent {
     TResult Function(_initEvent value)? init,
     TResult Function(_getAllEvent value)? getAll,
     TResult Function(_addEvent value)? add,
-    TResult Function(_getEvent value)? get,
-    TResult Function(_getLengthEvent value)? getLength,
     TResult Function(_modEvent value)? mod,
     TResult Function(_remEvent value)? rem,
     TResult Function(_remAllEvent value)? remAll,

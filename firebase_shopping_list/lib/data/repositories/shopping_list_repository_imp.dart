@@ -58,8 +58,8 @@ class ShoppingListRepositoryImpl extends ShoppingListRepository {
   }
 
   @override
-  Future<List<PurchasesListEntities>> getAll({required bool sortFilter, required bool buyFilter}) async {
-    return await shoppingListRemoteDataSource.getAll(sortFilter: sortFilter, buyFilter: buyFilter);
+  Stream<List<PurchasesListEntities>> getAll({required bool sortFilter, required bool buyFilter}) {
+    return shoppingListRemoteDataSource.getAll(sortFilter: sortFilter, buyFilter: buyFilter);
   }
 
   @override

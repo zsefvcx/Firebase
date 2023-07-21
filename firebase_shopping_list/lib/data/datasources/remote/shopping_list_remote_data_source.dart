@@ -4,6 +4,6 @@ import 'package:firebase_shopping_list/data/data.dart';
 
 abstract class ShoppingListRemoteDataSource extends AllRepository{
 
-  Future<List<PurchasesListModel>> getAll({required bool sortFilter, required bool buyFilter});
+  Stream<List<PurchasesListModel>> getAll({required bool sortFilter, required bool buyFilter});
 
 }
